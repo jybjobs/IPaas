@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.paas.systemmanager.dao.StatusDAO">
+    <resultMap id="BaseResultMap" type="com.cloud.paas.systemmanager.model.CodeStatus">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="code" property="code" jdbcType="INTEGER"/>
+        <result column="code_en" property="codeEn" jdbcType="VARCHAR"/>
+        <result column="msg" property="msg" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="success" property="success" jdbcType="INTEGER"/>
+        <result column="process_code" property="processCode" jdbcType="INTEGER"/>
+        <result column="process_zh" property="processZh" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,code, code_en, msg, level, type, success,process_code,process_zh
+  </sql>
+
+    <select id="findStatusByCode" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_code_status
+        where code = #{code,jdbcType=INTEGER}
+    </select>
+
+    <select id="findStatusByCodeEn" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_code_status
+        where code_en = #{codeEn,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_code_status
+    </select>
+
+    <!--分页查找statusIdList，参数是查询条件-->
+    <select id="findStatusIdListByCondition" resultMap="BaseResultMap"
+            parameterType="com.cloud.paas.systemmanager.qo.status.StatusCondition">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_code_status code_status
+        WHERE TRUE
+        <if test="condition!= null and condition !=''">
+            and code_status.code like concat('%',#{condition,jdbcType=VARCHAR}, '%')
+            or code_status.id in(
+            select
+            code_status.id
+            from
+            acp_code_status code_status
+            where
+            code_status.msg like concat('%',#{condition,jdbcType=VARCHAR}, '%')
+            )
+        </if>
+        order BY
+        code_status.id ASC
+    </select>
+
+    <!--分页 根据idList查询出其对应的codeStatusList,参数是List<Integer>-->
+    <select id="findCodeStatusList" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_code_status code_status
+        <if test="list.size()!=0">
+            WHERE
+            code_status.id in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="list.size()==0">
+            WHERE
+            code_status.id = ""
+        </if>
+        order BY
+        code_status.id ASC
+    </select>
+
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.systemmanager.model.CodeStatus" >
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_code_status
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="code != null" >
+                code,
+            </if>
+            <if test="codeEn != null" >
+                code_en,
+            </if>
+            <if test="msg != null" >
+                msg,
+            </if>
+            <if test="level != null" >
+                level,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="success != null" >
+                success,
+            </if>
+            <if test="processCode != null" >
+                process_code,
+            </if>
+            <if test="processZh != null" >
+                process_zh,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="code != null" >
+                #{code,jdbcType=INTEGER},
+            </if>
+            <if test="codeEn != null" >
+                #{codeEn,jdbcType=VARCHAR},
+            </if>
+            <if test="msg != null" >
+                #{msg,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null" >
+                #{level,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="success != null" >
+                #{success,jdbcType=INTEGER},
+            </if>
+            <if test="processCode != null" >
+                #{processCode,jdbcType=INTEGER},
+            </if>
+            <if test="processZh != null" >
+                #{processZh,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.systemmanager.model.CodeStatus" >
+        update acp_code_status
+        <set >
+            <if test="code != null" >
+                code = #{code,jdbcType=INTEGER},
+            </if>
+            <if test="codeEn != null" >
+                code_en = #{codeEn,jdbcType=VARCHAR},
+            </if>
+            <if test="msg != null" >
+                msg = #{msg,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null" >
+                level = #{level,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="success != null" >
+                success = #{success,jdbcType=INTEGER},
+            </if>
+            <if test="processCode != null" >
+                process_code = #{processCode,jdbcType=INTEGER},
+            </if>
+            <if test="processZh != null" >
+                process_zh = #{processZh,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>

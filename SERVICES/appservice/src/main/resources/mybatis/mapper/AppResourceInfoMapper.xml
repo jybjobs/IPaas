@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.AppResourceInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.AppResourceInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="app_id" property="appId" jdbcType="INTEGER" />
+    <result column="cpu" property="cpu" jdbcType="REAL" />
+    <result column="mem" property="mem" jdbcType="REAL" />
+    <result column="storage" property="storage" jdbcType="REAL" />
+    <result column="storage_type" property="storageType" jdbcType="TINYINT" />
+    <result column="net" property="net" jdbcType="REAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, app_id, cpu, mem, storage, storage_type, net, create_time, update_time, creator
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from acp_app_resource_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from acp_app_resource_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.paas.appservice.model.AppResourceInfo" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_app_resource_info (id, app_id, cpu, 
+      mem, storage, storage_type, 
+      net, create_time, update_time, 
+      creator)
+    values (#{id,jdbcType=INTEGER}, #{appId,jdbcType=INTEGER}, #{cpu,jdbcType=REAL}, 
+      #{mem,jdbcType=REAL}, #{storage,jdbcType=REAL}, #{storageType,jdbcType=TINYINT}, 
+      #{net,jdbcType=REAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{creator,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.paas.appservice.model.AppResourceInfo" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_app_resource_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      id,
+      <if test="appId != null" >
+        app_id,
+      </if>
+      <if test="cpu != null" >
+        cpu,
+      </if>
+      <if test="mem != null" >
+        mem,
+      </if>
+      <if test="storage != null" >
+        storage,
+      </if>
+      <if test="storageType != null" >
+        storage_type,
+      </if>
+      <if test="net != null" >
+        net,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=INTEGER},
+      <if test="appId != null" >
+        #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="cpu != null" >
+        #{cpu,jdbcType=REAL},
+      </if>
+      <if test="mem != null" >
+        #{mem,jdbcType=REAL},
+      </if>
+      <if test="storage != null" >
+        #{storage,jdbcType=REAL},
+      </if>
+      <if test="storageType != null" >
+        #{storageType,jdbcType=TINYINT},
+      </if>
+      <if test="net != null" >
+        #{net,jdbcType=REAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.paas.appservice.model.AppResourceInfo" >
+    update acp_app_resource_info
+    <set >
+      <if test="appId != null" >
+        app_id = #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="cpu != null" >
+        cpu = #{cpu,jdbcType=REAL},
+      </if>
+      <if test="mem != null" >
+        mem = #{mem,jdbcType=REAL},
+      </if>
+      <if test="storage != null" >
+        storage = #{storage,jdbcType=REAL},
+      </if>
+      <if test="storageType != null" >
+        storage_type = #{storageType,jdbcType=TINYINT},
+      </if>
+      <if test="net != null" >
+        net = #{net,jdbcType=REAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.paas.appservice.model.AppResourceInfo" >
+    update acp_app_resource_info
+    set app_id = #{appId,jdbcType=INTEGER},
+      cpu = #{cpu,jdbcType=REAL},
+      mem = #{mem,jdbcType=REAL},
+      storage = #{storage,jdbcType=REAL},
+      storage_type = #{storageType,jdbcType=TINYINT},
+      net = #{net,jdbcType=REAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

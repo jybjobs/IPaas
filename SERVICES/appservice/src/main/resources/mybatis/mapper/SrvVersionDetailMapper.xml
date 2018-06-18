@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.SrvVersionDetailDAO">
+    <!-- 基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.SrvVersionDetail">
+        <id column="srv_version_id" property="srvVersionId" jdbcType="INTEGER"/>
+        <result column="srv_id" property="srvId" jdbcType="INTEGER"/>
+        <result column="srv_version" property="srvVersion" jdbcType="VARCHAR"/>
+        <result column="srv_version_desc" property="srvVersionDesc" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_version" property="busiPkgVersion" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_version_id" property="busiPkgVersionId" jdbcType="INTEGER"/>
+        <result column="srv_version_status" property="srvVersionStatus" jdbcType="VARCHAR"/>
+        <result column="srv_image_id" property="srvImageId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 映射服务结果集 -->
+    <resultMap id="listSrvResultMap" type="com.cloud.paas.appservice.vo.srv.SrvVersionDetailVO">
+        <id column="srv_version_id" property="srvVersionId" jdbcType="INTEGER"/>
+        <result column="srv_id" property="srvId" jdbcType="INTEGER"/>
+        <result column="srv_version" property="srvVersion" jdbcType="VARCHAR"/>
+        <result column="srv_version_desc" property="srvVersionDesc" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_version" property="busiPkgVersion" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_version_id" property="busiPkgVersionId" jdbcType="INTEGER"/>
+        <result column="srv_version_status" property="srvVersionStatus" jdbcType="VARCHAR"/>
+        <result column="srv_image_id" property="srvImageId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <association property="srvDetail" javaType="com.cloud.paas.appservice.model.SrvDetail">
+            <id column="srv_id" property="srvId" jdbcType="INTEGER"/>
+            <result column="srv_name_ch" property="srvNameCh" jdbcType="VARCHAR"/>
+            <result column="srv_name_en" property="srvNameEn" jdbcType="VARCHAR"/>
+            <result column="srv_desc" property="srvDesc" jdbcType="VARCHAR"/>
+            <result column="srv_type" property="srvType" jdbcType="TINYINT"/>
+            <result column="busi_pkg" property="busiPkg" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_id" property="busiPkgId" jdbcType="INTEGER"/>
+            <result column="srv_image" property="srvImage" jdbcType="VARCHAR"/>
+            <result column="srv_image_id" property="srvImageId" jdbcType="INTEGER"/>
+            <result column="srv_image_version" property="srvImageVersion" jdbcType="VARCHAR"/>
+            <result column="srv_image_version_id" property="srvImageVersionId" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+            <result column="creator" property="creator" jdbcType="VARCHAR"/>
+            <result column="tenant_id" property="tenantId" jdbcType="INTEGER"/>
+            <result column="srv_desc_img_path" property="srvDescImgPath" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    srv_version_id, srv_id, srv_version, srv_version_desc,busi_pkg_version, busi_pkg_version_id,srv_version_status,srv_image_id, create_time,
+    update_time, creator
+  </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_srv_version_detail
+        where srv_version_id = #{srvVersionId,jdbcType=INTEGER}
+    </select>
+
+    <!-- 查询服务定义详情 -->
+    <select id="listSrvVersionDetail" resultMap="listSrvResultMap" parameterType="com.cloud.paas.appservice.qo.SrvVersionDetailExample">
+        SELECT *
+        FROM acp_srv_version_detail asvd
+        LEFT JOIN
+        acp_srv_detail asd
+        ON asvd.srv_id = asd.srv_id
+        <where>
+            <if test="condition != null and condition != ''">
+                asd.srv_name_en LIKE concat('%',#{condition,jdbcType=VARCHAR},'%')
+                OR
+                asd.srv_name_ch LIKE concat('%',#{condition,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="srvDetail!= null and srvDetail.srvNameEn != null and srvDetail.srvNameEn!=''">
+                AND asd.srv_name_en LIKE concat('%', #{srvDetail.srvNameEn,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="srvVersion != null and srvVersion!=''">
+                AND asvd.srv_version LIKE concat('%', #{srvVersion,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="srvId != null and srvId!=''">
+                AND asvd.srv_id = #{srvId,jdbcType=INTEGER}
+            </if>
+            <if test="srvVersionStatus != null and srvVersionStatus!=''">
+                AND asvd.srv_version_status = #{srvVersionStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY asvd.create_time DESC
+    </select>
+
+    <!-- 根据ids查询服务定义详情 -->
+    <select id="listSrvVersionDetailByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        SELECT srv_version_id,srv_version_status
+        FROM acp_srv_version_detail
+        WHERE srv_version_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!-- 查询中间状态的服务定义的镜像版本编号 -->
+    <select id="doFindProcessingImageVersionIds" resultMap="listSrvResultMap">
+        SELECT srv_image_id,srv_version_id
+        FROM acp_srv_version_detail
+        WHERE srv_version_status
+        NOT IN
+        ('1052300','1052600','1052700','1052900')
+    </select>
+
+    <!-- 根据主键删除 -->
+    <delete id="doDeleteById" parameterType="java.lang.Integer">
+        delete from acp_srv_version_detail
+        where srv_version_id = #{srvVersionId,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 插入数据 -->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.appservice.model.SrvVersionDetail">
+        <selectKey resultType="java.lang.Integer" keyProperty="srvVersionId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_srv_version_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            srv_version_id,
+            <if test="srvId != null">srv_id,</if>
+            <if test="srvVersion != null">srv_version,</if>
+            <if test="srvVersionDesc != null">srv_version_desc,</if>
+            <if test="busiPkgVersion != null">busi_pkg_version,</if>
+            <if test="busiPkgVersionId != null">busi_pkg_version_id,</if>
+            <if test="srvVersionStatus != null">srv_version_status,</if>
+            <if test="srvImageId != null">srv_image_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="creator != null">creator,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{srvVersionId,jdbcType=INTEGER},
+            <if test="srvId != null">#{srvId,jdbcType=INTEGER},</if>
+            <if test="srvVersion != null">#{srvVersion,jdbcType=VARCHAR},</if>
+            <if test="srvVersionDesc != null">#{srvVersionDesc,jdbcType=VARCHAR},</if>
+            <if test="busiPkgVersion != null">#{busiPkgVersion,jdbcType=VARCHAR},</if>
+            <if test="busiPkgVersionId != null">#{busiPkgVersionId,jdbcType=INTEGER},</if>
+            <if test="srvVersionStatus != null">#{srvVersionStatus,jdbcType=VARCHAR},</if>
+            <if test="srvImageId != null">#{srvImageId,jdbcType=INTEGER},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">#{creator,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.appservice.model.SrvVersionDetail">
+        update acp_srv_version_detail
+        <set>
+            <if test="srvId != null">
+                srv_id = #{srvId,jdbcType=INTEGER},
+            </if>
+            <if test="srvVersion != null">
+                srv_version = #{srvVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="srvVersionDesc != null">
+                srv_version_desc = #{srvVersionDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="busiPkgVersion != null">
+                busi_pkg_version = #{busiPkgVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="busiPkgVersionId != null">
+                busi_pkg_version_id = #{busiPkgVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="srvVersionStatus != null">
+                srv_version_status = #{srvVersionStatus,jdbcType=INTEGER},
+            </if>
+            <if test="srvImageId != null">
+                srv_image_id = #{srvImageId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where srv_version_id = #{srvVersionId,jdbcType=INTEGER}
+    </update>
+</mapper>

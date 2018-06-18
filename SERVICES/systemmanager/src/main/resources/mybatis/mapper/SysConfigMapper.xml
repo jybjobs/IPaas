@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.systemmanager.dao.SysConfigDao" >
+  <resultMap id="BaseResultMap" type="com.cloud.paas.systemmanager.model.SysConfig" >
+    <id column="sys_config_id" property="sysConfigId" jdbcType="INTEGER" />
+    <result column="sys_config_chname" property="sysConfigChname" jdbcType="VARCHAR" />
+    <result column="sys_config_enname" property="sysConfigEnname" jdbcType="VARCHAR" />
+    <result column="sys_config_value" property="sysConfigValue" jdbcType="VARCHAR" />
+    <result column="sys_config_module" property="sysConfigModule" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    sys_config_id, sys_config_chname, sys_config_enname, sys_config_value, sys_config_module,
+    remark, creator, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+
+    select 
+    <include refid="Base_Column_List" />
+    from acp_sys_config
+    where "sys_config_id" = #{sysConfigId,jdbcType=INTEGER}
+  </select>
+
+ <!--通过中文名查找-->
+  <select id="selectByChName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from acp_sys_config
+    where sys_config_chname = #{configChName,jdbcType=VARCHAR}
+  </select>
+
+<!--   通过英文名查找 -->
+  <select id="selectByEnName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from acp_sys_config
+    where sys_config_enname = #{configEnName,jdbcType=VARCHAR}
+  </select>
+
+  <!--条件查询-->
+  <select id="selectByAll" resultMap="BaseResultMap" parameterType="com.cloud.paas.systemmanager.qo.config.ConfigCondition" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM acp_sys_config
+    <where>
+      <if test="condition != null and condition != ''">
+        acp_sys_config.sys_config_chname LIKE concat('%',#{condition,jdbcType=VARCHAR},'%')
+        OR
+        acp_sys_config.sys_config_enname LIKE concat('%',#{condition,jdbcType=VARCHAR},'%')
+      </if>
+    </where>
+  </select>
+
+
+<!-- 删除配置项-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from acp_sys_config
+    where sys_config_id = #{sysConfigId,jdbcType=INTEGER}
+  </delete>
+
+
+<!--  插入配置项-->
+  <insert id="insertSelective" parameterType="com.cloud.paas.systemmanager.model.SysConfig" >
+    <selectKey resultType="java.lang.Integer" keyProperty="sysConfigId" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_sys_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sysConfigChname != null" >
+        sys_config_chname,
+      </if>
+      <if test="sysConfigEnname != null" >
+        sys_config_enname,
+      </if>
+      <if test="sysConfigValue != null" >
+        sys_config_value,
+      </if>
+      <if test="sysConfigModule != null" >
+        sys_config_module,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+        create_time,
+        update_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sysConfigChname != null" >
+        #{sysConfigChname,jdbcType=VARCHAR},
+      </if>
+      <if test="sysConfigEnname != null" >
+        #{sysConfigEnname,jdbcType=VARCHAR},
+      </if>
+      <if test="sysConfigValue != null" >
+        #{sysConfigValue,jdbcType=VARCHAR},
+      </if>
+      <if test="sysConfigModule != null" >
+        #{sysConfigModule,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+        now(3),
+        now(3),
+    </trim>
+  </insert>
+
+<!-- 更新配置-->
+  <update id="updateByPrimaryKey" parameterType="com.cloud.paas.systemmanager.model.SysConfig" >
+
+    update acp_sys_config
+    <set>
+      <if test="sysConfigChname != null" >
+        sys_config_chname = #{sysConfigChname,jdbcType=VARCHAR},
+      </if>
+      <if test="sysConfigValue != null" >
+        sys_config_value = #{sysConfigValue,jdbcType=VARCHAR},
+      </if>
+      <if test="sysConfigModule != null" >
+        sys_config_module = #{sysConfigModule,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+        update_time = now(3)
+    </set>
+    where sys_config_id = #{sysConfigId,jdbcType=INTEGER}
+  </update>
+
+</mapper>

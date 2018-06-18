@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/acp.iml" filepath="$PROJECT_DIR$/acp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/appservice/appservice.iml" filepath="$PROJECT_DIR$/appservice/appservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/containerconsole/containerconsole.iml" filepath="$PROJECT_DIR$/containerconsole/containerconsole.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imageregistry/imageregistry.iml" filepath="$PROJECT_DIR$/imageregistry/imageregistry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monitor/monitor.iml" filepath="$PROJECT_DIR$/monitor/monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/systemmanager/systemmanager.iml" filepath="$PROJECT_DIR$/systemmanager/systemmanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taskmanager/taskmanager.iml" filepath="$PROJECT_DIR$/taskmanager/taskmanager.iml" />
+    </modules>
+  </component>
+</project>

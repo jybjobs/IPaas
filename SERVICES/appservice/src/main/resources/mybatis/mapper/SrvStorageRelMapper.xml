@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.SrvStorageRelDAO" >
+
+  <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.SrvStorageRel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="srv_id" property="srvId" jdbcType="INTEGER" />
+    <result column="func" property="func" jdbcType="VARCHAR" />
+    <result column="catalog" property="catalog" jdbcType="VARCHAR" />
+    <result column="descr" property="descr" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    id, srv_id, func, catalog, descr, create_time, update_time, creator
+  </sql>
+
+  <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from acp_srv_storage_rel
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="doDeleteById" parameterType="java.lang.Integer" >
+    delete from acp_srv_storage_rel
+    where srv_id = #{srvId,jdbcType=INTEGER}
+  </delete>
+
+  <!--全量查询-->
+  <select id="listAllSrvMinuteState" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from acp_srv_storage_rel
+  </select>
+
+  <!--查询存储详情-->
+  <select id="doFindBySrvId"
+          resultMap="BaseResultMap"
+          parameterType="java.lang.Integer">
+    select
+    id,
+    srv_id,
+    catalog,
+    func,
+    descr
+    from acp_srv_storage_rel
+    WHERE srv_id = #{srvId,jdbcType=INTEGER}
+  </select>
+
+  <insert id="doInsertByBean" parameterType="com.cloud.paas.appservice.model.SrvStorageRel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_srv_storage_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      id,
+      <if test="srvId != null" >
+        srv_id,
+      </if>
+      <if test="func != null" >
+        func,
+      </if>
+      <if test="catalog != null" >
+        catalog,
+      </if>
+      <if test="descr != null" >
+        descr,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=INTEGER},
+      <if test="srvId != null" >
+        #{srvId,jdbcType=INTEGER},
+      </if>
+      <if test="func != null" >
+        #{func,jdbcType=VARCHAR},
+      </if>
+      <if test="catalog != null" >
+        #{catalog,jdbcType=VARCHAR},
+      </if>
+      <if test="descr != null" >
+        #{descr,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateBySrvStorageRel" parameterType="com.cloud.paas.appservice.model.SrvStorageRel" >
+    update acp_srv_storage_rel
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.srvId != null" >
+        srv_id = #{record.srvId,jdbcType=INTEGER},
+      </if>
+      <if test="record.func != null" >
+        func = #{record.func,jdbcType=VARCHAR},
+      </if>
+      <if test="record.catalog != null" >
+        catalog = #{record.catalog,jdbcType=VARCHAR},
+      </if>
+      <if test="record.descr != null" >
+        descr = #{record.descr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+  </update>
+
+</mapper>

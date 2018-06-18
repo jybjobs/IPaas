@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+       http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+    <mapping>
+        <class-a>com.cloud.paas.appservice.vo.srv.SrvInstDetailVO</class-a>
+
+        <class-b>com.cloud.paas.appservice.util.yaml.service.Service</class-b>
+        <field>
+            <a>srvNameEn</a>
+            <b>metadata.name</b>
+        </field>
+
+        <field>
+            <a>srvNameEn</a>
+            <b>metadata.labels.app</b>
+        </field>
+
+        <field>
+            <a>srvNameEn</a>
+            <b>spec.selector.app</b>
+        </field>
+
+       <field>
+           <a>srvPort</a>
+           <b>spec.ports[0].targetPort</b>
+       </field>
+
+        <field>
+            <a>srvPort</a>
+            <b>spec.ports[0].port</b>
+       </field>
+
+        <field>
+            <a>nodePort</a>
+            <b>spec.ports[0].nodePort</b>
+        </field>
+
+    </mapping>
+
+</mappings>

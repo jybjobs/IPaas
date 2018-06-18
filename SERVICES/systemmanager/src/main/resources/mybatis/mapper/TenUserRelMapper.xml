@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.systemmanager.dao.TenUserRelDAO" >
+  <!--映射关系-->
+  <resultMap id="BaseResultMap" type="com.cloud.paas.systemmanager.model.TenUserRel" >
+    <id column="tenant_user_rel_id" property="tenantUserRelId" jdbcType="INTEGER" />
+    <result column="tenant_id" property="tenantId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <!--租户用户关系字段-->
+  <sql id="Base_Column_List" >
+    tenant_user_rel_id, tenant_id, user_id, creator, create_time, update_time
+  </sql>
+
+  <!--创建租户用户关系-->
+  <insert id="doInsertByBean" parameterType="com.cloud.paas.systemmanager.model.TenUserRel">
+ <!--   <selectKey keyProperty="tenantUserRelId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>-->
+    insert into acp_tenant_user_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tenantUserRelId != null" >
+        tenant_user_rel_id,
+      </if>
+      <if test="tenantId != null" >
+        tenant_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tenantUserRelId != null" >
+        #{tenantUserRelId,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null" >
+        #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <!--更新租户人员-->
+  <update id="doUpdateByBean" parameterType="com.cloud.paas.systemmanager.model.TenUserRel">
+    update acp_tenant_user_rel
+    <set>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tenant_user_rel_id = #{tenantUserRelId,jdbcType=INTEGER}
+  </update>
+</mapper>

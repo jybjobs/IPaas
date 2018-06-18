@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.systemmanager.dao.TenantInfoDAO" >
+  <!--映射关系-->
+  <resultMap id="BaseResultMap" type="com.cloud.paas.systemmanager.model.TenantInfo" >
+    <id column="tenant_id" property="tenantId" jdbcType="INTEGER" />
+    <result column="tenant_name" property="tenantName" jdbcType="VARCHAR" />
+    <result column="cpu_quota" property="cpuQuota" jdbcType="REAL" />
+    <result column="mem_quota" property="memQuota" jdbcType="REAL" />
+    <result column="disk_quota" property="diskQuota" jdbcType="REAL" />
+    <result column="manager_user_id" property="managerUserId" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <!--租户-租户人员对象-->
+  <resultMap id="TenantInfoVO" type="com.cloud.paas.systemmanager.vo.dictory.TenantInfoVO" >
+    <id column="tenant_id" property="tenantId" jdbcType="INTEGER" />
+    <result column="tenant_name" property="tenantName" jdbcType="VARCHAR" />
+    <result column="cpu_quota" property="cpuQuota" jdbcType="REAL" />
+    <result column="mem_quota" property="memQuota" jdbcType="REAL" />
+    <result column="disk_quota" property="diskQuota" jdbcType="REAL" />
+    <result column="manager_user_id" property="managerUserId" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <collection property="tenantusers" ofType="com.cloud.paas.systemmanager.model.User">
+      <id column="user_id" property="userId" jdbcType="INTEGER" />
+      <result column="user_name_ch" property="userNameCh" jdbcType="VARCHAR" />
+      <result column="user_name_en" property="userNameEn" jdbcType="VARCHAR" />
+      <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+      <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+      <result column="creator" property="creator" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+
+
+  <!--租户所有字段-->
+  <sql id="Base_Column_List" >
+    tenant_id, tenant_name, cpu_quota, mem_quota, disk_quota, manager_user_id, creator, 
+    create_time, update_time
+  </sql>
+  <sql id="tenant_tenusers">
+    SELECT
+    tenant_id, tenant_name, cpu_quota, mem_quota, disk_quota, manager_user_id, creator,
+    create_time, update_time
+    FROM acp_tenant_detail_info
+    LEFT JOIN acp_tenant_user_rel ON acp_tenant_detail_info.tenant_id = acp_tenant_user_rel.tenant_id
+  </sql>
+
+  <!--  二表条件查找租户详情（包括租户人员）-->
+  <select id="getTenantDetailInfo" resultMap="TenantInfoVO"
+          parameterType="java.lang.Integer">
+
+    SELECT
+      acp_tenant_detail_info.tenant_id, acp_tenant_detail_info.tenant_name, acp_tenant_detail_info.cpu_quota,
+      acp_tenant_detail_info.mem_quota, acp_tenant_detail_info.disk_quota, acp_tenant_detail_info.manager_user_id, acp_tenant_detail_info.creator,
+      acp_tenant_detail_info.create_time, acp_tenant_detail_info.update_time
+    FROM acp_tenant_detail_info
+    LEFT JOIN acp_tenant_user_rel ON acp_tenant_detail_info.tenant_id = acp_tenant_user_rel.tenant_id
+    where
+      manager_user_id=#{managerUserId,jdbcType=INTEGER}
+  </select>
+
+
+
+  <!--创建租户-->
+  <insert id="doInsertByBean" parameterType="com.cloud.paas.systemmanager.model.TenantInfo">
+    <selectKey keyProperty="tenantId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_tenant_detail_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+
+      <if test="tenantName != null">
+        tenant_name,
+      </if>
+      <if test="cpuQuota != null and cpuQuota != 0">
+        cpu_quota,
+      </if>
+      <if test="memQuota != null and memQuota != 0">
+        mem_quota,
+      </if>
+      <if test="diskQuota != null and diskQuota != 0">
+        disk_quota,
+      </if>
+      <if test="managerUserId != null and managerUserId != 0">
+        manager_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+      <if test="tenantName != null">
+        #{tenantName,jdbcType=VARCHAR},
+      </if>
+      <if test="cpuQuota != null">
+        #{cpuQuota,jdbcType=REAL},
+      </if>
+      <if test="memQuota != null">
+        #{memQuota,jdbcType=REAL},
+      </if>
+      <if test="diskQuota != null">
+        #{diskQuota,jdbcType=REAL},
+      </if>
+      <if test="managerUserId != null">
+        #{managerUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <!-- 获取全量租户列表 -->
+  <select id="listTenants" parameterType="com.cloud.paas.systemmanager.qo.tenant.TenantCondition" resultMap="TenantInfoVO">
+    SELECT
+    tenant.tenant_id,
+    tenant.tenant_name,
+    tenant.cpu_quota,
+    tenant.mem_quota,
+    tenant.disk_quota,
+    tenant.manager_user_id,
+    tenant.creator,
+    tenant.create_time,
+    tenant.update_time,
+    acp_user.user_id,
+    acp_user.user_name_en,
+    acp_user.user_name_ch
+
+    FROM acp_tenant_detail_info  tenant
+    LEFT JOIN acp_user
+    ON acp_tenant_detail_info.manager_user_id = acp_user.user_id
+    <where>
+      <if test="condition != null and condition != '' ">
+        acp_tenant_detail_info.tenant_name LIKE concat('%',#{condition,jdbcType=VERCHAR},'%')
+        OR
+        acp_user.user_name_ch LIKE concat('%',#{condition,jdbcType=VERCHAR},'%')
+      </if>
+    </where>
+  </select>
+
+  <!--更新租户-->
+  <update id="doUpdateByBean" parameterType="com.cloud.paas.systemmanager.model.TenantInfo">
+    update acp_tenant_detail_info
+    <set>
+      <if test="tenantName != null">
+        tenant_name = #{tenantName,jdbcType=VARCHAR},
+      </if>
+      <if test="cpuQuota != null">
+        cpu_quota = #{cpuQuota,jdbcType=REAL},
+      </if>
+      <if test="memQuota != null">
+        mem_quota = #{memQuota,jdbcType=REAL},
+      </if>
+      <if test="diskQuota != null">
+        disk_quota = #{diskQuota,jdbcType=REAL},
+      </if>
+      <if test="managerUserId != null">
+        manager_user_id = #{managerUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tenant_id = #{tenantId,jdbcType=INTEGER}
+  </update>
+
+  <!--查询租户详情-->
+  <select id="doFindByTenantName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    tenant_id,
+	tenant_name,
+	cpu_quota,
+	mem_quota,
+	disk_quota,
+	manager_user_id,
+	creator,
+	create_time,
+	update_time
+    from acp_tenant_detail_info
+    where tenant_name = #{tenantName,jdbcType=VARCHAR}
+  </select>
+
+  <!--删除租户-->
+  <delete id="doDeleteById" parameterType="java.lang.Integer">
+    delete
+    from
+    acp_tenant_detail_info
+    where
+    tenant_id = #{tenantId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

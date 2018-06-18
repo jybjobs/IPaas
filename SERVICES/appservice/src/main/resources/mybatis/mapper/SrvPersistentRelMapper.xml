@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.SrvPersistentRelDAO">
+    <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.SrvPersistentRel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="srv_id" property="srvId" jdbcType="INTEGER"/>
+        <result column="persistent_path" property="persistentPath" jdbcType="VARCHAR"/>
+        <result column="descr" property="descr" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, srv_id, persistent_path, descr, create_time, update_time, creator
+  </sql>
+    <!--根据服务编号查询-->
+    <select id="doFindBySrvId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_srv_persistent_rel
+        where srv_id = #{srvId,jdbcType=INTEGER}
+    </select>
+
+    <!-- 插入数据 -->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.appservice.model.SrvPersistentRel">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_srv_persistent_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="srvId != null">srv_id,</if>
+            <if test="persistentPath != null">persistent_path,</if>
+            <if test="descr != null">descr,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="creator != null">creator,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=INTEGER},
+            <if test="srvId != null">#{srvId,jdbcType=INTEGER},</if>
+            <if test="persistentPath != null">#{persistentPath,jdbcType=VARCHAR},</if>
+            <if test="descr != null">#{descr,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="creator != null">#{creator,jdbcType=VARCHAR}</if>
+        </trim>
+    </insert>
+
+    <delete id="doDeleteById" parameterType="java.lang.Integer" >
+        delete from acp_srv_persistent_rel
+        where srv_id = #{srvId,jdbcType=INTEGER}
+    </delete>
+
+</mapper>

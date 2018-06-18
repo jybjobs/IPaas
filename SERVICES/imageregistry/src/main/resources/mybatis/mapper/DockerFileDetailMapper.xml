@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.imageregistry.dao.DockerFileDetailDAO">
+
+    <!--Base结果集map-->
+    <resultMap id="BaseResultMap" type="com.cloud.paas.imageregistry.model.DockerFileDetail">
+        <id column="dockerfile_id" property="dockerfileId" jdbcType="INTEGER" />
+        <result column="base_pkg_version_id" property="basePkgVersionId" jdbcType="INTEGER" />
+        <result column="base_image_version_id" property="baseImageVersionId" jdbcType="INTEGER" />
+        <result column="configure_type" property="configureType" jdbcType="INTEGER" />
+        <result column="base_image_en" property="baseImageEn" jdbcType="VARCHAR" />
+        <result column="base_image_version" property="baseImageVersion" jdbcType="VARCHAR" />
+        <result column="cmd" property="cmd" jdbcType="VARCHAR" />
+        <result column="port" property="port" jdbcType="VARCHAR" />
+        <result column="add_path" property="addPath" jdbcType="VARCHAR" />
+        <result column="env" property="env" jdbcType="VARCHAR" />
+        <result column="run" property="run" jdbcType="VARCHAR" />
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="DATE" />
+        <result column="update_time" property="updateTime" jdbcType="DATE" />
+        <result column="content" property="content"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        dockerfile_id, base_image_en, base_image_version, content, cmd, port, env, run, creator,
+        create_time, update_time
+    </sql>
+
+    <!--根据dockerfileId查询dockerfile信息-->
+    <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_dockerfile_detail_info
+        where dockerfile_id = #{dockerfileId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.imageregistry.model.DockerFileDetail" >
+        <selectKey resultType="java.lang.Integer" keyProperty="dockerfileId" order="AFTER" >
+        SELECT LAST_INSERT_ID()
+    </selectKey>
+        insert into acp_dockerfile_detail_info
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="dockerfileId != null" >
+                dockerfile_id,
+            </if>
+            <if test="baseImageEn != null" >
+                base_image_en,
+            </if>
+            <if test="baseImageVersionId != null" >
+                base_image_version_id,
+            </if>
+            <if test="configureType != null" >
+                configure_type,
+            </if>
+            <if test="basePkgVersionId != null" >
+                base_pkg_version_id,
+            </if>
+            <if test="baseImageVersion != null" >
+                base_image_version,
+            </if>
+            <if test="cmd != null" >
+                cmd,
+            </if>
+            <if test="port != null" >
+                port,
+            </if>
+            <if test="addPath != null" >
+                add_path,
+            </if>
+            <if test="env != null" >
+                env,
+            </if>
+            <if test="run != null" >
+                run,
+            </if>
+            <if test="creator != null" >
+                creator,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="updateTime != null" >
+                update_time,
+            </if>
+            <if test="content != null" >
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="dockerfileId != null" >
+                #{dockerfileId,jdbcType=INTEGER},
+            </if>
+            <if test="baseImageEn != null" >
+                #{baseImageEn,jdbcType=VARCHAR},
+            </if>
+
+            <if test="baseImageVersionId != null" >
+                #{baseImageVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="configureType != null" >
+                #{configureType,jdbcType=INTEGER},
+            </if>
+            <if test="basePkgVersionId != null" >
+                #{basePkgVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="baseImageVersion != null" >
+                #{baseImageVersion,jdbcType=VARCHAR},
+            </if>
+
+            <if test="cmd != null" >
+                #{cmd,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null" >
+                #{port,jdbcType=VARCHAR},
+            </if>
+            <if test="addPath != null" >
+                #{addPath,jdbcType=VARCHAR},
+            </if>
+            <if test="env != null" >
+                #{env,jdbcType=VARCHAR},
+            </if>
+            <if test="run != null" >
+                #{run,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null" >
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null" >
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByPkgVersionId" parameterType="java.lang.Integer" resultType="java.lang.Integer" >
+        select COUNT(1)
+        FROM acp_dockerfile_detail_info
+        where base_pkg_version_id = #{busiPkgVersionId,jdbcType=INTEGER}
+    </select>
+</mapper>

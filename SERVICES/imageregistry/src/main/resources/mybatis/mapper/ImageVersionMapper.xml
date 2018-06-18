@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.imageregistry.dao.ImageVersionMngDAO">
+
+    <resultMap id="BaseResultMap" type="com.cloud.paas.imageregistry.model.ImageVersion">
+        <id column="image_version_id" property="imageVersionId" jdbcType="INTEGER"/>
+        <result column="image_id" property="imageId" jdbcType="BIGINT"/>
+        <result column="image_version" property="imageVersion" jdbcType="VARCHAR"/>
+        <result column="image_status" property="imageStatus" jdbcType="INTEGER"/>
+        <result column="image_stage" property="imageStage" jdbcType="INTEGER"/>
+        <result column="image_version_remark" property="imageVersionRemark" jdbcType="VARCHAR"/>
+        <result column="image_auth" property="imageAuth" jdbcType="INTEGER"/>
+        <result column="image_version_size" property="imageVersionSize" jdbcType="REAL"/>
+        <result column="image_upload_way" property="imageUploadWay" jdbcType="INTEGER"/>
+        <result column="image_upload_name" property="imageUploadName" jdbcType="VARCHAR"/>
+        <result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
+        <result column="dockfile_id" property="dockfileId" jdbcType="INTEGER"/>
+        <result column="busi_pkg_version_id" property="busiPkgVersionId" jdbcType="INTEGER"/>
+        <result column="image_source" property="imageSource" jdbcType="VARCHAR"/>
+        <result column="image_source_registry" property="imageSourceRegistry" jdbcType="VARCHAR"/>
+        <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+        <result column="port" property="port" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="passwd" property="passwd" jdbcType="VARCHAR"/>
+        <result column="registry_id" property="registryId" jdbcType="INTEGER"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--镜像版本信息、仓库对应的resultMap-->
+    <resultMap id="versionResultMap" type="com.cloud.paas.imageregistry.vo.image.ImageVersionVO">
+        <!--镜像详情-->
+        <id column="image_version_id" property="imageVersionId" jdbcType="INTEGER"/>
+        <result column="image_id" property="imageId" jdbcType="BIGINT"/>
+        <result column="image_version" property="imageVersion" jdbcType="VARCHAR"/>
+        <result column="image_status" property="imageStatus" jdbcType="INTEGER"/>
+        <result column="image_stage" property="imageStage" jdbcType="INTEGER"/>
+        <result column="image_version_remark" property="imageVersionRemark" jdbcType="VARCHAR"/>
+        <result column="image_auth" property="imageAuth" jdbcType="INTEGER"/>
+        <result column="image_version_size" property="imageVersionSize" jdbcType="REAL"/>
+        <result column="image_upload_way" property="imageUploadWay" jdbcType="INTEGER"/>
+        <result column="image_upload_name" property="imageUploadName" jdbcType="VARCHAR"/>
+        <result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
+        <result column="dockfile_id" property="dockfileId" jdbcType="INTEGER"/>
+        <result column="busi_pkg_version_id" property="busiPkgVersionId" jdbcType="INTEGER"/>
+        <result column="image_source" property="imageSource" jdbcType="VARCHAR"/>
+        <result column="image_source_registry" property="imageSourceRegistry" jdbcType="VARCHAR"/>
+        <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+        <result column="image_version_port" property="port" jdbcType="INTEGER"/>
+        <result column="image_version_username" property="userName" jdbcType="VARCHAR"/>
+        <result column="image_version_passwd" property="passwd" jdbcType="VARCHAR"/>
+        <result column="registry_id" property="registryId" jdbcType="INTEGER"/>
+        <result column="image_version_creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="image_version_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="image_version_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="busi_pkg_stage" property="busiPkgStage" jdbcType="INTEGER"/>
+
+        <!--一对一关系，对应镜像公共信息-->
+        <association property="imageDetail" javaType="com.cloud.paas.imageregistry.model.ImageDetail">
+            <id column="image_id" property="imageId" jdbcType="BIGINT"/>
+            <result column="image_name_zh" property="imageNameZh" jdbcType="VARCHAR"/>
+            <result column="image_name_en" property="imageNameEn" jdbcType="VARCHAR"/>
+            <result column="image_remark" property="imageRemark" jdbcType="VARCHAR"/>
+            <result column="image_type" property="imageType" jdbcType="INTEGER"/>
+            <result column="image_size" property="imageSize" jdbcType="DECIMAL"/>
+            <result column="image_picture_path" property="imagePicturePath"/>
+            <result column="image_detail_info_creator" property="creator" jdbcType="VARCHAR"/>
+            <result column="image_detail_info_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="image_detail_info_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        </association>
+        <!--一对一关系，对应仓库信息-->
+        <association property="registryDetail" javaType="com.cloud.paas.imageregistry.model.RegistryDetail">
+            <id column="registry_id" jdbcType="INTEGER" property="registryId"/>
+            <result column="registry_name_zh" jdbcType="VARCHAR" property="registryNameZh"/>
+            <result column="registry_name_en" jdbcType="VARCHAR" property="registryNameEn"/>
+            <result column="registry_type" jdbcType="INTEGER" property="registryType"/>
+            <result column="registry_primary_standb" jdbcType="INTEGER" property="registryPrimaryStandb"/>
+            <result column="registry_status" jdbcType="INTEGER" property="registryStatus"/>
+            <result column="registry_auth" jdbcType="INTEGER" property="registryAuth"/>
+            <result column="registry_ip" jdbcType="VARCHAR" property="registryIp"/>
+            <result column="registry_port" jdbcType="DECIMAL" property="registryPort"/>
+            <result column="registry_storage_type" jdbcType="INTEGER" property="registryStorageType"/>
+            <result column="registry_quota" jdbcType="INTEGER" property="registryQuota"/>
+            <result column="images_use_size" jdbcType="DECIMAL" property="imagesUseSize"/>
+            <result column="support_primary_standby" jdbcType="INTEGER" property="supportPrimaryStandby"/>
+            <result column="relate_registry" jdbcType="VARCHAR" property="relateRegistry"/>
+            <result column="support_authentication" jdbcType="INTEGER" property="supportAuthentication"/>
+            <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+            <result column="passwd" jdbcType="VARCHAR" property="passwd"/>
+            <result column="host_storage_path" jdbcType="VARCHAR" property="hostStoragePath"/>
+            <result column="host_storage_size" jdbcType="INTEGER" property="hostStorageSize"/>
+            <result column="distributed_storage_path" jdbcType="VARCHAR" property="distributedStoragePath"/>
+            <result column="distributed_storage_size" jdbcType="INTEGER" property="distributedStorageSize"/>
+            <result column="file_system_type" jdbcType="INTEGER" property="fileSystemType"/>
+            <result column="remark" jdbcType="VARCHAR" property="remark"/>
+            <result column="registry_detail_creator" jdbcType="VARCHAR" property="creator"/>
+            <result column="registry_detail_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="registry_detail_update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        </association>
+        <!--一对一关系，对应dockerfie信息-->
+        <association property="dockerFileDetail" javaType="com.cloud.paas.imageregistry.model.DockerFileDetail">
+            <id column="dockerfile_id" property="dockerfileId" jdbcType="INTEGER"/>
+            <result column="base_pkg_version_id" property="basePkgVersionId" jdbcType="INTEGER"/>
+            <result column="base_image_version_id" property="baseImageVersionId" jdbcType="INTEGER"/>
+            <result column="configure_type" property="configureType" jdbcType="INTEGER"/>
+            <result column="base_image_en" property="baseImageEn" jdbcType="VARCHAR"/>
+            <result column="base_image_version" property="baseImageVersion" jdbcType="VARCHAR"/>
+            <result column="cmd" property="cmd" jdbcType="VARCHAR"/>
+            <result column="content" property="content"/>
+        </association>
+        <!--一对一关系，对应镜像版本规则-->
+        <association property="imageVersionRule" javaType="com.cloud.paas.imageregistry.model.ImageVersionRule">
+            <id column="rule_id" property="ruleId" jdbcType="INTEGER" />
+            <result column="base_image_version_id" property="baseImageVersionId" jdbcType="INTEGER" />
+            <result column="expose_port" property="exposePort" jdbcType="VARCHAR" />
+            <result column="publish_path" property="publishPath" jdbcType="VARCHAR" />
+        </association>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        image_version_id, image_id, image_version, image_status, image_stage, image_version_remark, image_auth, image_version_size, image_upload_way,
+        image_upload_name, image_path, dockfile_id, busi_pkg_version_id, image_source, image_source_registry, host_ip,
+        port, user_name, passwd, registry_id, creator, create_time, update_time
+    </sql>
+
+    <select id="confirmDelete"
+            resultType="java.lang.Integer"
+            parameterType="java.lang.Integer">
+        SELECT
+          COUNT(image_version_id)
+        FROM
+          acp_image_version
+        WHERE
+          image_id = #{imageId,jdbcType=INTEGER}
+    </select>
+    <!--获取一条镜像版本信息的详细内容，包含镜像公共信息的内容-->
+    <select id="selectVersionInformation"
+            resultMap="versionResultMap"
+            parameterType="java.lang.Integer">
+    SELECT
+            det.image_id,det.image_name_zh,det.image_name_en,det.image_remark,det.image_type,ver.image_version_id,ver.image_version,ver.image_status,ver.image_stage,ver.image_version_remark,ver.image_auth,ver.image_version_size,ver.image_upload_way,ver.image_path,ver.dockfile_id,ver.busi_pkg_version_id,ver.image_source,ver.registry_id,ver.image_source_registry,
+            ver.host_ip,ver.port AS image_version_port,ver.user_name AS image_version_username,ver.passwd AS image_version_passwd,reg.registry_name_zh,reg.registry_ip,reg.registry_port,
+            ver.creator AS image_version_creator,ver.create_time AS image_version_create_time,
+            ver.update_time AS image_version_update_time,dock.base_pkg_version_id,dock.content,
+            dock.base_image_version_id,dock.cmd,dock.configure_type,rule.expose_port,rule.publish_path
+    FROM
+        acp_image_detail_info AS det
+        LEFT JOIN
+        acp_image_version AS ver
+        ON
+        det.image_id = ver.image_id
+        LEFT JOIN
+        acp_registry_detail_info AS reg
+        ON
+        reg.registry_id=ver.registry_id
+        LEFT JOIN
+        acp_dockerfile_detail_info AS dock
+        ON
+        dock.dockerfile_id = ver.dockfile_id
+        LEFT JOIN
+        acp_image_version_rule AS rule
+        ON
+        rule.base_image_version_id=ver.image_version_id
+    WHERE
+        ver.image_version_id = #{imageVersionId,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectVersionDetailForSrv"
+            parameterType="com.cloud.paas.imageregistry.vo.image.ImageVersionVO"
+            resultMap="versionResultMap">
+        SELECT *
+        FROM (
+        SELECT
+        d.image_id,
+        d.image_name_zh,
+        d.image_name_en,
+        d.image_remark,
+        d.image_type,
+        v.image_version_id,
+        v.image_version,
+        v.image_status,
+        v.image_stage,
+        v.image_version_remark,
+        v.image_auth,
+        v.image_version_size,
+        v.image_upload_way,
+        v.image_path,
+        v.dockfile_id,
+        v.busi_pkg_version_id,
+        v.image_source,
+        v.image_source_registry,
+        v.host_ip,
+        v.port AS image_version_port,
+        v.user_name AS image_version_username,
+        v.passwd AS image_version_passwd,
+        reg.registry_name_zh,
+        reg.registry_ip,
+        reg.registry_port,
+        v.creator AS image_version_creator,
+        v.create_time AS image_version_create_time,
+        v.update_time AS image_version_update_time,
+        rule.expose_port,
+        rule.publish_path
+        FROM
+        acp_image_version AS v
+        LEFT JOIN
+        acp_image_detail_info AS d
+        ON
+        d.image_id = v.image_id
+        LEFT JOIN
+        acp_registry_detail_info AS reg
+        ON
+        reg.registry_id=v.registry_id
+        LEFT JOIN
+        acp_image_version_rule AS rule
+        ON
+        rule.base_image_version_id=v.image_version_id
+        <where>
+            <if test="imageDetail!= null and imageDetail.imageNameZh != null and imageDetail.imageNameZh!=''">
+                AND d.image_name_zh LIKE concat('%', #{imageDetail.imageNameZh,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageVersion!= null and imageVersion!='' ">
+                AND v.image_version LIKE concat('%', #{imageVersion,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="creator!= null and creator!='' ">
+                AND image_version_creator LIKE concat('%', #{creator,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageDetail!= null and imageDetail.imageType != null and imageDetail.imageType!=''">
+                AND d.image_type LIKE concat('%', #{imageDetail.imageType,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageStatus != null and imageStatus!=''">
+                AND image_status LIKE concat('%', #{imageStatus,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="condition != null and condition!=''">
+                AND d.image_name_zh LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR v.image_version LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR v.creator LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR d.image_type LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>) AS cond
+        <if test="imageStatus != null and imageStatus!=''">
+            WHERE image_status LIKE concat('%', #{imageStatus,jdbcType=VARCHAR}, '%')
+        </if>
+        ORDER BY image_version_create_time DESC
+    </select>
+
+    <!--获取所有镜像版本信息的详细内容，包含镜像公共信息的内容 运行环境-->
+    <select id="selectVersionDetail"
+            parameterType="com.cloud.paas.imageregistry.vo.image.ImageVersionVO"
+            resultMap="versionResultMap">
+        SELECT *
+        FROM (
+        SELECT
+        d.image_id,
+        d.image_name_zh,
+        d.image_name_en,
+        d.image_remark,
+        d.image_type,
+        v.image_version_id,
+        v.image_version,
+        v.image_status,
+        v.image_stage,
+        v.image_version_remark,
+        v.image_auth,
+        v.image_version_size,
+        v.image_upload_way,
+        v.image_path,
+        v.dockfile_id,
+        v.busi_pkg_version_id,
+        v.image_source,
+        v.image_source_registry,
+        v.host_ip,
+        v.port AS image_version_port,
+        v.user_name AS image_version_username,
+        v.passwd AS image_version_passwd,
+        reg.registry_name_zh,
+        reg.registry_ip,
+        reg.registry_port,
+        v.creator AS image_version_creator,
+        v.create_time AS image_version_create_time,
+        v.update_time AS image_version_update_time,
+        rule.expose_port,
+        rule.publish_path
+        FROM
+        acp_image_version AS v
+        LEFT JOIN
+        acp_image_detail_info AS d
+        ON
+        d.image_id = v.image_id
+        LEFT JOIN
+        acp_registry_detail_info AS reg
+        ON
+        reg.registry_id=v.registry_id
+        LEFT JOIN
+        acp_image_version_rule AS rule
+        ON
+        rule.base_image_version_id=v.image_version_id
+        <where>
+            <if test="condition != null and condition!=''">
+                AND v.image_version LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR d.image_name_zh LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageDetail!= null and imageDetail.imageType != null and imageDetail.imageType!=''">
+                AND image_type LIKE concat('%', #{imageDetail.imageType,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageDetail!= null and imageDetail.imageNameZh != null and imageDetail.imageNameZh!=''">
+                AND d.image_name_zh LIKE concat('%', #{imageDetail.imageNameZh,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageVersion!= null and imageVersion!='' ">
+                AND v.image_version LIKE concat('%', #{imageVersion,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageDetail!= null and imageDetail.imageType != null and imageDetail.imageType!=''">
+                AND d.image_type LIKE concat('%', #{imageDetail.imageType,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>) AS  cond
+        ORDER BY image_version_create_time DESC
+    </select>
+
+
+    <!--镜像条件查询  页面主查询-->
+    <select id="selectByConditions"
+            parameterType="com.cloud.paas.imageregistry.vo.image.ImageVersionVO"
+            resultMap="com.cloud.paas.imageregistry.dao.ImageDetailDAO.selectImageVersionList">
+        SELECT *
+        FROM (
+        SELECT
+        d.image_id, d.image_name_zh, d.image_name_en, d.image_remark, d.image_type, d.image_size, d.creator AS
+        image_detail_info_creator,d.create_time AS image_detail_info_create_time,d.update_time AS
+        image_detail_info_update_time,v.image_version_id, v.image_version, v.image_status, v.image_stage,
+        v.image_version_remark, v.image_auth, v.image_version_size, v.image_upload_way,
+        v.image_path, v.dockfile_id, v.busi_pkg_version_id, v.image_source, v.image_source_registry, v.host_ip, v.port
+        AS image_version_port, v.user_name AS image_version_username, v.passwd AS image_version_passwd, v.registry_id,
+        v.creator AS image_version_creator,
+        v.create_time AS image_version_create_time, v.update_time AS image_version_update_time,
+        busi_pkg_version.busi_pkg_stage
+        FROM
+        acp_image_detail_info AS d
+        LEFT JOIN
+        acp_image_version AS v
+        ON
+        d.image_id=v.image_id
+        LEFT JOIN
+        acp_busi_pkg_version busi_pkg_version
+        ON
+        busi_pkg_version.busi_pkg_version_id = v.busi_pkg_version_id
+        <where>
+            <if test="imageVersionIdList.size()!=0">
+                AND d.image_id IN
+                <foreach collection="imageVersionIdList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="imageVersionIdList.size()==0">
+                AND d.image_id =""
+            </if>
+            <if test="imageVersion != null and imageVersion!=''">
+                AND v.image_version LIKE concat('%', #{imageVersion,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="registryId!= null and registryId!=''">
+                AND v.registry_id LIKE concat('%', #{registryId,jdbcType=INTEGER}, '%')
+            </if>
+            <if test=" imageDetail !=null and imageDetail.imageNameZh != null and imageDetail.imageNameZh!=''">
+                AND d.image_name_zh LIKE concat('%', #{imageDetail.imageNameZh,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="imageDetail !=null and imageDetail.imageType != null and imageDetail.imageType!=''">
+                AND d.image_type LIKE concat('%', #{imageDetail.imageType,jdbcType=INTEGER}, '%')
+            </if>
+            <if test="condition != null and condition != ''">
+                AND v.image_version LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR d.image_name_zh LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>) AS cond
+        <if test="registryId!= null and registryId!=''">
+            WHERE registry_id LIKE concat('%', #{registryId,jdbcType=INTEGER}, '%')
+        </if>
+        ORDER BY image_version_create_time DESC ,
+        image_version_update_time DESC
+    </select>
+
+    <select id="imageSizeSum"
+            parameterType="java.lang.Long"
+            resultType="java.math.BigDecimal">
+        SELECT
+          sum(image_version_size)
+        FROM
+          acp_image_version
+        WHERE acp_image_version.image_id = #{imageId,jdbcType=INTEGER}
+    </select>
+    <!--分页查询-->
+    <select id="selectPageByConditions"
+            parameterType="com.cloud.paas.imageregistry.vo.image.ImageVersionVO"
+            resultMap="com.cloud.paas.imageregistry.dao.ImageDetailDAO.BaseResultMap">
+        SELECT
+          image_id
+        FROM
+        acp_image_detail_info
+        <where>
+            <if test="condition != null and condition != ''">
+                AND image_name_zh LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR image_name_en LIKE concat('%', #{condition,jdbcType=VARCHAR}, '%')
+                OR creator LIKE concat('%',#{condition,jdbcType=VARCHAR}, '%')
+                OR image_id IN (
+                  SELECT image_id
+                  FROM acp_image_version
+                  WHERE image_version LIKE concat('%',#{condition,jdbcType=VARCHAR}, '%')
+                      OR creator LIKE concat('%',#{condition,jdbcType=VARCHAR}, '%')
+                )
+            </if>
+        </where>
+        order by
+          create_time DESC
+    </select>
+
+    <!--获取镜像版本信息的内容-->
+    <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_image_version
+        where
+        image_version_id = #{imageVersionId,jdbcType=INTEGER}
+    </select>
+
+    <!--根据仓库id获取镜像版本-->
+    <select id="listByRegistryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_image_version
+        where
+        registry_id = #{registryId,jdbcType=INTEGER}
+    </select>
+
+    <!--根据仓库id获取在仓库中存在的镜像版本-->
+    <select id="listImageByRegistryId" resultMap="versionResultMap" parameterType="java.lang.Integer">
+         SELECT
+            registry.registry_name_zh,
+            registry.registry_name_en,
+            image.image_name_zh,
+            image.image_name_en,
+            version.image_version_id,
+            version.image_id,
+            version.image_version,
+            version.image_status,
+            version.image_stage,
+            version.image_version_remark,
+            version.image_auth,
+            version.image_version_size,
+            version.image_upload_way,
+            version.image_upload_name,
+            version.image_path,
+            version.dockfile_id,
+            version.busi_pkg_version_id,
+            version.image_source,
+            version.image_source_registry,
+            version.host_ip,
+            version.PORT,
+            version.user_name,
+            version.passwd,
+            version.registry_id,
+            version.creator as image_version_creator,
+            version.create_time as image_version_create_time,
+            version.update_time as image_version_update_time
+        FROM
+            acp_image_version version,
+            acp_registry_detail_info registry,
+            acp_image_detail_info image
+        WHERE
+            version.image_status = 1052600
+        and version.registry_id =registry.registry_id
+        and version.image_id = image.image_id
+        AND version.registry_id = #{registryId,jdbcType=INTEGER}
+    </select>
+
+    <!--根据镜像id获取对应的镜像版本信息的内容-->
+    <select id="listVersionByImageId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_image_version
+        where
+        image_id = #{imageId,jdbcType=BIGINT}
+    </select>
+
+    <!--删除镜像版本信息的内一条信息-->
+    <delete id="doDeleteById" parameterType="java.lang.Integer">
+    DELETE
+    FROM
+        acp_image_version
+    WHERE
+        image_version_id = #{imageVersionId,jdbcType=INTEGER}
+    </delete>
+
+    <!--向镜像版本信息中插入一条记录-->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.imageregistry.model.ImageVersion">
+        <selectKey resultType="java.lang.Integer" keyProperty="imageVersionId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_image_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imageVersionId != null">
+                image_version_id,
+            </if>
+            <if test="imageId != null">
+                image_id,
+            </if>
+            <if test="imageVersion != null">
+                image_version,
+            </if>
+            <if test="imageStatus != null">
+                image_status,
+            </if>
+            <if test="imageStage != null">
+                image_stage,
+            </if>
+            <if test="imageVersionRemark != null">
+                image_version_remark,
+            </if>
+            <if test="imageAuth != null">
+                image_auth,
+            </if>
+            <if test="imageVersionSize != null">
+                image_version_size,
+            </if>
+            <if test="imageUploadWay != null">
+                image_upload_way,
+            </if>
+            <if test="imageUploadName != null">
+                image_upload_name,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="dockfileId != null">
+                dockfile_id,
+            </if>
+            <if test="busiPkgVersionId != null">
+                busi_pkg_version_id,
+            </if>
+            <if test="imageSource != null">
+                image_source,
+            </if>
+            <if test="imageSourceRegistry != null">
+                image_source_registry,
+            </if>
+            <if test="hostIp != null">
+                host_ip,
+            </if>
+            <if test="port != null">
+                port,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="passwd != null">
+                passwd,
+            </if>
+            <if test="registryId != null">
+                registry_id,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+                create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imageVersionId != null">
+                #{imageVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="imageId != null">
+                #{imageId,jdbcType=BIGINT},
+            </if>
+            <if test="imageVersion != null">
+                #{imageVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="imageStatus != null">
+                #{imageStatus,jdbcType=INTEGER},
+            </if>
+            <if test="imageStage != null">
+                #{imageStage,jdbcType=INTEGER},
+            </if>
+            <if test="imageVersionRemark != null">
+                #{imageVersionRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="imageAuth != null">
+                #{imageAuth,jdbcType=INTEGER},
+            </if>
+            <if test="imageVersionSize != null">
+                #{imageVersionSize,jdbcType=REAL},
+            </if>
+            <if test="imageUploadWay != null">
+                #{imageUploadWay,jdbcType=INTEGER},
+            </if>
+            <if test="imageUploadName != null">
+                #{imageUploadName,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="dockfileId != null">
+                #{dockfileId,jdbcType=INTEGER},
+            </if>
+            <if test="busiPkgVersionId != null">
+                #{busiPkgVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="imageSource != null">
+                #{imageSource,jdbcType=VARCHAR},
+            </if>
+            <if test="imageSourceRegistry != null">
+                #{imageSourceRegistry,jdbcType=VARCHAR},
+            </if>
+            <if test="hostIp != null">
+                #{hostIp,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null">
+                #{port,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passwd != null">
+                #{passwd,jdbcType=VARCHAR},
+            </if>
+            <if test="registryId != null">
+                #{registryId,jdbcType=INTEGER},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            now(3)
+        </trim>
+    </insert>
+
+    <!--更新版本信息的内容-->
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.imageregistry.model.ImageVersion">
+        UPDATE
+        acp_image_version
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imageVersionRemark != null and imageVersionRemark != ''">
+                image_version_remark = #{imageVersionRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="imageAuth != null and imageAuth != ''">
+                image_auth = #{imageAuth,jdbcType=INTEGER},
+            </if>
+            <if test="imageStatus != null and imageStatus != ''">
+                image_status=#{imageStatus,jdbcType=INTEGER},
+            </if>
+            <if test="imageVersionSize != null and imageVersionSize != ''">
+                image_version_size=#{imageVersionSize,jdbcType=REAL},
+            </if>
+                update_time = now(3),
+        </trim>
+        WHERE
+        image_version_id = #{imageVersionId,jdbcType=INTEGER}
+    </update>
+
+    <!--查询指定镜像版本的状态-->
+    <select id="getStatusByImageIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+          image_version_id,
+          image_id,
+          image_status
+        FROM
+          acp_image_version
+        <where>
+            image_id IN
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+</mapper>

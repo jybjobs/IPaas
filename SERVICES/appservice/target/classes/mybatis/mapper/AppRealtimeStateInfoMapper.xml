@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.AppRealtimeStateInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.AppRealtimeStateInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="app_id" property="appId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="cpu_usage" property="cpuUsage" jdbcType="REAL" />
+    <result column="mem_usage" property="memUsage" jdbcType="REAL" />
+    <result column="disk_usage" property="diskUsage" jdbcType="REAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, app_id, status, cpu_usage, mem_usage, disk_usage, create_time, update_time, creator
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from acp_app_realtime_state_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from acp_app_realtime_state_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.paas.appservice.model.AppRealtimeStateInfo" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_app_realtime_state_info (id, app_id, status, 
+      cpu_usage, mem_usage, disk_usage, 
+      create_time, update_time, creator
+      )
+    values (#{id,jdbcType=INTEGER}, #{appId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{cpuUsage,jdbcType=REAL}, #{memUsage,jdbcType=REAL}, #{diskUsage,jdbcType=REAL}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.paas.appservice.model.AppRealtimeStateInfo" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_app_realtime_state_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      id,
+      <if test="appId != null" >
+        app_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="cpuUsage != null" >
+        cpu_usage,
+      </if>
+      <if test="memUsage != null" >
+        mem_usage,
+      </if>
+      <if test="diskUsage != null" >
+        disk_usage,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=INTEGER},
+      <if test="appId != null" >
+        #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="cpuUsage != null" >
+        #{cpuUsage,jdbcType=REAL},
+      </if>
+      <if test="memUsage != null" >
+        #{memUsage,jdbcType=REAL},
+      </if>
+      <if test="diskUsage != null" >
+        #{diskUsage,jdbcType=REAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.paas.appservice.model.AppRealtimeStateInfo" >
+    update acp_app_realtime_state_info
+    <set >
+      <if test="appId != null" >
+        app_id = #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="cpuUsage != null" >
+        cpu_usage = #{cpuUsage,jdbcType=REAL},
+      </if>
+      <if test="memUsage != null" >
+        mem_usage = #{memUsage,jdbcType=REAL},
+      </if>
+      <if test="diskUsage != null" >
+        disk_usage = #{diskUsage,jdbcType=REAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.paas.appservice.model.AppRealtimeStateInfo" >
+    update acp_app_realtime_state_info
+    set app_id = #{appId,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      cpu_usage = #{cpuUsage,jdbcType=REAL},
+      mem_usage = #{memUsage,jdbcType=REAL},
+      disk_usage = #{diskUsage,jdbcType=REAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

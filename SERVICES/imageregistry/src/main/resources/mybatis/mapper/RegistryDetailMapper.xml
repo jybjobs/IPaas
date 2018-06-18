@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.paas.imageregistry.dao.RegistryDetailDAO">
+
+    <!--映射关系-->
+    <resultMap id="BaseResultMap" type="com.cloud.paas.imageregistry.model.RegistryDetail">
+        <id column="registry_id" jdbcType="INTEGER" property="registryId"/>
+        <result column="registry_name_zh" jdbcType="VARCHAR" property="registryNameZh"/>
+        <result column="registry_name_en" jdbcType="VARCHAR" property="registryNameEn"/>
+        <result column="registry_type" jdbcType="INTEGER" property="registryType"/>
+        <result column="registry_primary_standb" jdbcType="INTEGER" property="registryPrimaryStandb"/>
+        <result column="registry_status" jdbcType="BIGINT" property="registryStatus"/>
+        <result column="registry_auth" jdbcType="INTEGER" property="registryAuth"/>
+        <result column="registry_ip" jdbcType="VARCHAR" property="registryIp"/>
+        <result column="registry_port" jdbcType="DECIMAL" property="registryPort"/>
+        <result column="registry_storage_type" jdbcType="INTEGER" property="registryStorageType"/>
+        <result column="registry_quota" jdbcType="INTEGER" property="registryQuota"/>
+        <result column="registry_container_id" jdbcType="VARCHAR" property="registryContainerId"/>
+        <result column="images_use_size" jdbcType="DECIMAL" property="imagesUseSize"/>
+        <result column="support_primary_standby" jdbcType="INTEGER" property="supportPrimaryStandby"/>
+        <result column="relate_registry" jdbcType="VARCHAR" property="relateRegistry"/>
+        <result column="support_authentication" jdbcType="INTEGER" property="supportAuthentication"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="passwd" jdbcType="VARCHAR" property="passwd"/>
+        <result column="host_storage_path" jdbcType="VARCHAR" property="hostStoragePath"/>
+        <result column="host_storage_size" jdbcType="INTEGER" property="hostStorageSize"/>
+        <result column="distributed_storage_path" jdbcType="VARCHAR" property="distributedStoragePath"/>
+        <result column="distributed_storage_size" jdbcType="INTEGER" property="distributedStorageSize"/>
+        <result column="file_system_type" jdbcType="INTEGER" property="fileSystemType"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!--多表查询-->
+    <resultMap id="selectResulteMap" type="com.cloud.paas.imageregistry.vo.registry.RegistryDetailVO">
+        <id column="registry_id" jdbcType="INTEGER" property="registryId"/>
+        <result column="registry_name_zh" jdbcType="VARCHAR" property="registryNameZh"/>
+        <result column="registry_name_en" jdbcType="VARCHAR" property="registryNameEn"/>
+        <result column="registry_type" jdbcType="INTEGER" property="registryType"/>
+        <result column="registry_primary_standb" jdbcType="INTEGER" property="registryPrimaryStandb"/>
+        <result column="registry_status" jdbcType="BIGINT" property="registryStatus"/>
+        <result column="registry_auth" jdbcType="INTEGER" property="registryAuth"/>
+        <result column="registry_ip" jdbcType="VARCHAR" property="registryIp"/>
+        <result column="registry_port" jdbcType="DECIMAL" property="registryPort"/>
+        <result column="registry_storage_type" jdbcType="INTEGER" property="registryStorageType"/>
+        <result column="registry_quota" jdbcType="INTEGER" property="registryQuota"/>
+        <result column="registry_container_id" jdbcType="VARCHAR" property="registryContainerId"/>
+        <result column="images_use_size" jdbcType="DECIMAL" property="imagesUseSize"/>
+        <result column="support_primary_standby" jdbcType="INTEGER" property="supportPrimaryStandby"/>
+        <result column="relate_registry" jdbcType="VARCHAR" property="relateRegistry"/>
+        <result column="support_authentication" jdbcType="INTEGER" property="supportAuthentication"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="passwd" jdbcType="VARCHAR" property="passwd"/>
+        <result column="host_storage_path" jdbcType="VARCHAR" property="hostStoragePath"/>
+        <result column="host_storage_size" jdbcType="INTEGER" property="hostStorageSize"/>
+        <result column="distributed_storage_path" jdbcType="VARCHAR" property="distributedStoragePath"/>
+        <result column="distributed_storage_size" jdbcType="INTEGER" property="distributedStorageSize"/>
+        <result column="file_system_type" jdbcType="INTEGER" property="fileSystemType"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="image_acount" property="count" jdbcType="INTEGER"/>
+        <result column="image_size" property="imageSize" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--仓库的所有字段sql-->
+    <sql id="Base_Column_List">
+        registry_id, registry_name_zh, registry_name_en, registry_type, registry_primary_standb,
+        registry_status, registry_auth, registry_ip, registry_port, registry_storage_type,
+        registry_quota,registry_container_id, images_use_size, support_primary_standby, relate_registry, support_authentication,
+        user_name, passwd, host_storage_path, host_storage_size, distributed_storage_path,
+        distributed_storage_size, file_system_type, remark, creator, create_time, update_time
+    </sql>
+
+    <!--根据imageId查询仓库的详细信息-->
+    <select id="doFindRegistryByImageId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+          detail.*
+        FROM
+          acp_image_registry_relation AS relation,
+          acp_registry_detail_info AS detail
+        WHERE
+          relation.registry_id = detail.registry_id
+        AND
+          relation.image_id = #{imageId,jdbcType=BIGINT}
+    </select>
+
+    <!--根据Id查询仓库的详细信息-->
+    <select id="doFindById" parameterType="java.lang.Integer" resultMap="selectResulteMap">
+        SELECT
+        COUNT(
+        acp_image_version.registry_id
+        ) AS image_acount,
+        IFNULL(
+        SUM(
+        IFNULL(
+        acp_image_version.image_version_size,
+        0
+        )
+        ),
+        0
+        ) AS image_size,
+        acp_registry_detail_info.registry_id,
+        acp_registry_detail_info.registry_name_zh,
+        acp_registry_detail_info.registry_name_en,
+        acp_registry_detail_info.registry_type,
+        acp_registry_detail_info.registry_primary_standb,
+        acp_registry_detail_info.registry_status,
+        acp_registry_detail_info.registry_auth,
+        acp_registry_detail_info.registry_ip,
+        acp_registry_detail_info.registry_port,
+        acp_registry_detail_info.registry_storage_type,
+        acp_registry_detail_info.registry_quota,
+        acp_registry_detail_info.registry_container_id,
+        acp_registry_detail_info.images_use_size,
+        acp_registry_detail_info.support_primary_standby,
+        acp_registry_detail_info.relate_registry,
+        acp_registry_detail_info.support_authentication,
+        acp_registry_detail_info.user_name,
+        acp_registry_detail_info.passwd,
+        acp_registry_detail_info.host_storage_path,
+        acp_registry_detail_info.host_storage_size,
+        acp_registry_detail_info.distributed_storage_path,
+        acp_registry_detail_info.distributed_storage_size,
+        acp_registry_detail_info.file_system_type,
+        acp_registry_detail_info.remark,
+        acp_registry_detail_info.creator,
+        acp_registry_detail_info.create_time,
+        acp_registry_detail_info.update_time
+        FROM acp_registry_detail_info
+
+        LEFT JOIN acp_image_version
+        ON acp_image_version.registry_id = acp_registry_detail_info.registry_id
+
+        WHERE
+          acp_registry_detail_info.registry_id =#{registryId,jdbcType=INTEGER}
+        and acp_image_version.image_status=1052600
+       <!-- select
+          <include refid="Base_Column_List"/>
+
+        from
+          acp_registry_detail_info
+        where
+          registry_id = #{registryId,jdbcType=INTEGER}-->
+    </select>
+
+    <!--根据中文名称查询仓库的详细信息-->
+    <select id="doFindByName" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+          acp_registry_detail_info
+        where
+          registry_name_zh=#{registryNameZh}
+    </select>
+
+    <!--根据英文名称查询仓库的详细信息-->
+    <select id="doFindByNameEn" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_registry_detail_info
+        where
+        registry_name_en=#{registryNameEn}
+    </select>
+
+    <!--根据仓库ip查询仓库信息-->
+    <select id="doFindByRegistryIp" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+           <include refid="Base_Column_List"/>
+        FROM
+        acp_registry_detail_info
+        WHERE
+        registry_ip=#{registryIp,jdbcType=VARCHAR}
+    </select>
+    <!--根据Id查询仓库的详细信息-->
+    <select id="doFindByRegistryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List"/>
+        from
+          acp_registry_detail_info
+        where
+          registry_id=#{registryId}
+    </select>
+
+    <!--根据创建者查询仓库的详细信息-->
+    <select id="doFindByCreator" parameterType="string" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List"/>
+        from
+          acp_registry_detail_info
+        where
+          creator
+        like
+          CONCAT(CONCAT('%', #{creator}), '%')
+</select>
+
+    <!--多条件混合查询仓库的详细信息-->
+    <select id="doFindByMultiConditionQuery"
+            parameterType="com.cloud.paas.imageregistry.qo.ConditionQuery"
+            resultMap="selectResulteMap">
+        SELECT
+        acp_registry_detail_info.registry_id,
+        acp_registry_detail_info.registry_name_zh,
+        acp_registry_detail_info.registry_name_en,
+        acp_registry_detail_info.registry_ip,
+        acp_registry_detail_info.registry_port,
+        acp_registry_detail_info.registry_status,
+        COUNT(acp_image_version.registry_id) AS image_acount,
+        IFNULL(SUM(IFNULL(acp_image_version.image_version_size,0)),0) AS image_size,
+        acp_registry_detail_info.registry_quota,
+        acp_registry_detail_info.support_primary_standby,
+        acp_registry_detail_info.creator,
+        acp_registry_detail_info.create_time
+        FROM acp_registry_detail_info
+        LEFT JOIN acp_image_version
+        ON acp_image_version.registry_id = acp_registry_detail_info.registry_id
+        and acp_image_version.image_status=1052600
+        where TRUE
+        <if test="condition!= null and condition !=''" >
+            and acp_registry_detail_info.registry_name_zh
+            like concat('%',#{condition,jdbcType=VARCHAR}, '%')
+            or acp_registry_detail_info.registry_ip
+            like concat('%',#{condition,jdbcType=VARCHAR}, '%')
+            or acp_registry_detail_info.creator
+            like concat('%',#{condition,jdbcType=VARCHAR}, '%')
+        </if>
+        GROUP BY
+        acp_registry_detail_info.registry_id,
+        acp_registry_detail_info.registry_name_zh,
+        acp_registry_detail_info.registry_name_en,
+        acp_registry_detail_info.registry_ip,
+        acp_registry_detail_info.registry_port,
+        acp_registry_detail_info.registry_status,
+        acp_registry_detail_info.registry_quota,
+        acp_registry_detail_info.support_primary_standby,
+        acp_registry_detail_info.creator,
+        acp_registry_detail_info.create_time
+    </select>
+
+    <!--查询仓库全量信息-->
+    <select id="listRegistryDetail" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List"/>
+        from
+          acp_registry_detail_info
+    </select>
+
+    <!--创建-->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.imageregistry.model.RegistryDetail">
+        insert into
+          acp_registry_detail_info
+          <trim prefix="(" suffix=")" suffixOverrides=",">
+            registry_id,
+            <if test="registryNameZh != null">
+                registry_name_zh,
+            </if>
+            <if test="registryNameEn != null">
+                registry_name_en,
+            </if>
+            <if test="registryType != null">
+                registry_type,
+            </if>
+            <if test="registryPrimaryStandb != null">
+                registry_primary_standb,
+            </if>
+            <if test="registryStatus != null">
+                registry_status,
+            </if>
+            <if test="registryAuth != null">
+                registry_auth,
+            </if>
+            <if test="registryIp != null">
+                registry_ip,
+            </if>
+            <if test="registryPort != null">
+                registry_port,
+            </if>
+            <if test="registryStorageType != null">
+                registry_storage_type,
+            </if>
+            <if test="registryQuota != null">
+                registry_quota,
+            </if>
+            <if test="imagesUseSize != null">
+                images_use_size,
+            </if>
+            <if test="supportPrimaryStandby != null">
+                support_primary_standby,
+            </if>
+            <if test="relateRegistry != null">
+                relate_registry,
+            </if>
+            <if test="supportAuthentication != null">
+                support_authentication,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="passwd != null">
+                passwd,
+            </if>
+            <if test="hostStoragePath != null">
+                host_storage_path,
+            </if>
+            <if test="hostStorageSize != null">
+                host_storage_size,
+            </if>
+            <if test="distributedStoragePath != null">
+                distributed_storage_path,
+            </if>
+            <if test="distributedStorageSize != null">
+                distributed_storage_size,
+            </if>
+            <if test="fileSystemType != null">
+                file_system_type,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="registryContainerId != null">
+                registry_container_id,
+            </if>
+              create_time,
+
+              update_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{registryId,jdbcType=INTEGER},
+            <if test="registryNameZh != null">
+                #{registryNameZh,jdbcType=VARCHAR},
+            </if>
+            <if test="registryNameEn != null">
+                #{registryNameEn,jdbcType=VARCHAR},
+            </if>
+            <if test="registryType != null">
+                #{registryType,jdbcType=INTEGER},
+            </if>
+            <if test="registryPrimaryStandb != null">
+                #{registryPrimaryStandb,jdbcType=INTEGER},
+            </if>
+            <if test="registryStatus != null">
+                #{registryStatus,jdbcType=INTEGER},
+            </if>
+            <if test="registryAuth != null">
+                #{registryAuth,jdbcType=INTEGER},
+            </if>
+            <if test="registryIp != null">
+                #{registryIp,jdbcType=VARCHAR},
+            </if>
+            <if test="registryPort != null">
+                #{registryPort,jdbcType=DECIMAL},
+            </if>
+            <if test="registryStorageType != null">
+                #{registryStorageType,jdbcType=INTEGER},
+            </if>
+            <if test="registryQuota != null">
+                #{registryQuota,jdbcType=INTEGER},
+            </if>
+            <if test="imagesUseSize != null">
+                #{imagesUseSize,jdbcType=DECIMAL},
+            </if>
+            <if test="supportPrimaryStandby != null">
+                #{supportPrimaryStandby,jdbcType=INTEGER},
+            </if>
+            <if test="relateRegistry != null">
+                #{relateRegistry,jdbcType=VARCHAR},
+            </if>
+            <if test="supportAuthentication != null">
+                #{supportAuthentication,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passwd != null">
+                #{passwd,jdbcType=VARCHAR},
+            </if>
+            <if test="hostStoragePath != null">
+                #{hostStoragePath,jdbcType=VARCHAR},
+            </if>
+            <if test="hostStorageSize != null">
+                #{hostStorageSize,jdbcType=INTEGER},
+            </if>
+            <if test="distributedStoragePath != null">
+                #{distributedStoragePath,jdbcType=VARCHAR},
+            </if>
+            <if test="distributedStorageSize != null">
+                #{distributedStorageSize,jdbcType=INTEGER},
+            </if>
+            <if test="fileSystemType != null">
+                #{fileSystemType,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="registryContainerId != null">
+                #{registryContainerId,jdbcType=VARCHAR},
+            </if>
+            now(3),
+            now(3),
+            </trim>
+    </insert>
+
+    <!--修改仓库信息-->
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.imageregistry.model.RegistryDetail">
+        update
+            acp_registry_detail_info
+        <set>
+            <if test="registryNameZh != null">
+                registry_name_zh = #{registryNameZh,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+            remark = #{remark,jdbcType=VARCHAR},
+        </if>
+            <if test="registryStatus != null">
+                registry_status = #{registryStatus,jdbcType=BIGINT},
+            </if>
+            <if test="registryContainerId != null">
+                registry_container_id = #{registryContainerId,jdbcType=VARCHAR},
+            </if>
+            update_time = now(3),
+        </set>
+        where
+            registry_id = #{registryId,jdbcType=INTEGER}
+    </update>
+
+    <!--删除-->
+    <delete id="doDeleteById" parameterType="java.lang.Integer">
+    delete from
+        acp_registry_detail_info
+    where
+        registry_id = #{registryId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

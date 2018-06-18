@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.SrvInstDetailDAO">
+    <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.SrvInstDetail">
+        <id column="srv_inst_id" property="srvInstId" jdbcType="INTEGER"/>
+        <result column="srv_version_id" property="srvVersionId" jdbcType="INTEGER"/>
+        <result column="srv_inst_num" property="srvInstNum" jdbcType="TINYINT"/>
+        <result column="cpu" property="cpu" jdbcType="VARCHAR"/>
+        <result column="mem" property="mem" jdbcType="VARCHAR"/>
+        <result column="domain_prefix" property="domainPrefix" jdbcType="VARCHAR"/>
+        <result column="domain_suffix" property="domainSuffix" jdbcType="VARCHAR"/>
+        <result column="node_port" property="nodePort" jdbcType="VARCHAR"/>
+        <result column="storage_quota" property="storageQuota" jdbcType="INTEGER"/>
+        <result column="app_id" property="appId" jdbcType="INTEGER"/>
+        <result column="app_name_zh" property="appNameZh" jdbcType="VARCHAR"/>
+        <result column="start_order" property="startOrder" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="srv_inst_status" property="srvInstStatus" jdbcType="INTEGER"/>
+        <result column="history" property="history" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="listSrvInstResultMap" type="com.cloud.paas.appservice.vo.srv.SrvInstDetailVO">
+        <id column="srv_inst_id" property="srvInstId" jdbcType="INTEGER"/>
+        <result column="srv_inst_num" property="srvInstNum" jdbcType="TINYINT"/>
+        <result column="cpu" property="cpu" jdbcType="VARCHAR"/>
+        <result column="mem" property="mem" jdbcType="VARCHAR"/>
+        <result column="domain_prefix" property="domainPrefix" jdbcType="VARCHAR"/>
+        <result column="domain_suffix" property="domainSuffix" jdbcType="VARCHAR"/>
+        <result column="node_port" property="nodePort" jdbcType="VARCHAR"/>
+        <result column="storage_quota" property="storageQuota" jdbcType="INTEGER"/>
+        <result column="start_order" property="startOrder" jdbcType="TINYINT"/>
+        <result column="srv_inst_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="srv_inst_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="srv_inst_creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="srv_inst_status" property="srvInstStatus" jdbcType="INTEGER"/>
+        <result column="history" property="history" jdbcType="INTEGER"/>
+        <association property="appDetail" javaType="com.cloud.paas.appservice.model.AppDetail">
+            <id column="app_id" jdbcType="INTEGER" property="appId"/>
+            <result column="app_name_zh" jdbcType="VARCHAR" property="appNameZh"/>
+            <result column="app_name_en" jdbcType="VARCHAR" property="appNameEn"/>
+            <result column="app_type" jdbcType="INTEGER" property="appType"/>
+            <result column="app_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="app_update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+            <result column="app_creator" jdbcType="VARCHAR" property="creator"/>
+        </association>
+        <association property="srvVersionDetail" javaType="com.cloud.paas.appservice.model.SrvVersionDetail">
+            <id column="srv_version_id" property="srvVersionId" jdbcType="INTEGER"/>
+            <result column="srv_version" property="srvVersion" jdbcType="VARCHAR"/>
+            <result column="srv_version_desc" property="srvVersionDesc" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_version" property="busiPkgVersion" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_version_id" property="busiPkgVersionId" jdbcType="INTEGER"/>
+            <result column="srv_version_status" property="srvVersionStatus" jdbcType="VARCHAR"/>
+            <result column="srv_version_image_id" property="srvImageId" jdbcType="INTEGER"/>
+            <result column="srv_version_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="srv_version_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+            <result column="srv_version_creator" property="creator" jdbcType="VARCHAR"/>
+        </association>
+        <association property="srvDetail" javaType="com.cloud.paas.appservice.model.SrvDetail">
+            <id column="srv_id" property="srvId" jdbcType="INTEGER"/>
+            <result column="srv_name_ch" property="srvNameCh" jdbcType="VARCHAR"/>
+            <result column="srv_name_en" property="srvNameEn" jdbcType="VARCHAR"/>
+            <result column="srv_desc" property="srvDesc" jdbcType="VARCHAR"/>
+            <result column="srv_type" property="srvType" jdbcType="TINYINT"/>
+            <result column="busi_pkg" property="busiPkg" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_id" property="busiPkgId" jdbcType="INTEGER"/>
+            <result column="srv_image" property="srvImage" jdbcType="VARCHAR"/>
+            <result column="srv_image_id" property="srvImageId" jdbcType="INTEGER"/>
+            <result column="srv_image_version" property="srvImageVersion" jdbcType="VARCHAR"/>
+            <result column="srv_image_version_id" property="srvImageVersionId" jdbcType="INTEGER"/>
+            <result column="srv_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="srv_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+            <result column="srv_creator" property="creator" jdbcType="VARCHAR"/>
+            <result column="tenant_id" property="tenantId" jdbcType="INTEGER"/>
+            <result column="srv_desc_img_path" property="srvDescImgPath" jdbcType="VARCHAR"/>
+        </association>
+        <association property="srvScaleRule" javaType="com.cloud.paas.appservice.model.SrvScaleRule">
+            <id column="rule_id" property="ruleId" jdbcType="INTEGER"/>
+            <result column="rule_name" property="ruleName" jdbcType="VARCHAR"/>
+            <result column="max_srv_inst_num" property="maxSrvInstNum" jdbcType="INTEGER"/>
+            <result column="metric" property="metric" jdbcType="VARCHAR"/>
+            <result column="target_average_utilization" property="targetAverageUtilization" jdbcType="INTEGER"/>
+            <result column="rule_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="rule_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+            <result column="rule_creator" property="creator" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    srv_inst_id, srv_version_id, srv_inst_num, cpu, mem, domain_prefix, domain_suffix,node_port,
+    storage_quota,app_id,app_name_zh,start_order,create_time,update_time,creator,srv_inst_status,history
+  </sql>
+
+    <sql id="srv_inst_list">
+      asid.srv_inst_id,
+      asid.srv_inst_num,
+      asid.cpu,
+      asid.mem,
+      asid.domain_prefix,
+      asid.domain_suffix,
+      asid.node_port,
+      asid.storage_quota,
+      asid.start_order,
+      asid.create_time AS srv_inst_create_time,
+      asid.update_time AS srv_inst_update_time,
+      asid.creator AS srv_inst_creator,
+      asid.srv_inst_status,
+      asid.history,
+
+      asvd.srv_version_id,
+      asvd.srv_version,
+      asvd.srv_version_desc,
+      asvd.busi_pkg_version,
+      asvd.busi_pkg_version_id,
+      asvd.srv_version_status,
+      asvd.srv_image_id AS srv_version_image_id,
+      asvd.create_time AS srv_version_create_time,
+      asvd.update_time AS srv_version_update_time,
+      asvd.creator AS srv_version_creator,
+
+      asd.srv_id,
+      asd.srv_name_ch,
+      asd.srv_name_en,
+      asd.srv_desc,
+      asd.srv_type,
+      asd.busi_pkg,
+      asd.busi_pkg_id,
+      asd.srv_image,
+      asd.srv_image_id,
+      asd.srv_image_version,
+      asd.srv_image_version_id,
+      asd.create_time AS srv_create_time,
+      asd.update_time AS srv_update_time,
+      asd.creator AS srv_creator,
+      asd.tenant_id,
+      asd.srv_desc_img_path,
+
+      aad.app_id,
+      aad.app_name_zh,
+      aad.app_name_en,
+      aad.app_type,
+      aad.create_time AS app_create_time,
+      aad.update_time AS app_update_time,
+      aad.creator AS app_creator,
+
+      rule.rule_id,
+      rule.rule_name,
+      rule.max_srv_inst_num,
+      rule.metric,
+      rule.target_average_utilization,
+      rule.create_time as rule_create_time,
+      rule.update_time as rule_update_time,
+      rule.creator as rule_creator
+    </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_srv_instance_detail
+        where srv_inst_id = #{srvInstId,jdbcType=INTEGER}
+    </select>
+
+    <!-- 根据NodePort查询 -->
+    <select id="doFindNodePort" resultType="java.lang.String">
+    select
+    IFNULL(max(node_port)+1,'30001')
+    from acp_srv_instance_detail
+  </select>
+
+    <!-- 根据服务实例编号查询服务实例详情 -->
+    <select id="listSrvInstInfoByInstId" resultMap="listSrvInstResultMap"
+            parameterType="com.cloud.paas.appservice.model.SrvInstDetail">
+    SELECT
+      <include refid="srv_inst_list"/>
+    FROM
+      acp_srv_instance_detail asid
+    LEFT JOIN acp_srv_version_detail asvd ON asid.srv_version_id = asvd.srv_version_id
+    LEFT JOIN acp_srv_detail asd ON asvd.srv_id = asd.srv_id
+    LEFT JOIN acp_app_detail aad ON asid.app_id = aad.app_id
+    LEFT JOIN acp_srv_scale_rule rule ON rule.srv_inst_id = asid.srv_inst_id
+    WHERE asid.srv_inst_id = #{srvInstId,jdbcType=INTEGER}
+  </select>
+
+    <!-- 根据应用名称和服务名称查询服务实例编号 -->
+    <select id="querySrvInstByAppAndSrv" resultType="java.lang.Integer"
+            parameterType="com.cloud.paas.appservice.qo.SrvInstDetailExample">
+        SELECT
+        asid.srv_inst_id
+        FROM
+        acp_srv_instance_detail asid
+        LEFT JOIN acp_srv_version_detail asvd ON asid.srv_version_id = asvd.srv_version_id
+        LEFT JOIN acp_srv_detail asd ON asvd.srv_id = asd.srv_id
+        LEFT JOIN acp_app_detail aad ON asid.app_id = aad.app_id
+        LEFT JOIN acp_srv_scale_rule rule ON rule.srv_inst_id = asid.srv_inst_id
+        <where>
+            <if test="appNameEn != null and appNameEn!=''">
+                AND aad.app_name_en = #{appNameEn,jdbcType=VARCHAR}
+            </if>
+            <if test="noHistory != null and noHistory!=''">
+                AND asid.history != #{noHistory,jdbcType=INTEGER}
+            </if>
+            <if test="srvNameEn != null and srvNameEn!=''">
+                AND asd.srv_name_en = #{srvNameEn,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 根据服务编号查询服务实例详情 -->
+    <select id="listSrvInstByCondition" resultMap="listSrvInstResultMap"
+            parameterType="com.cloud.paas.appservice.qo.SrvInstDetailExample">
+        SELECT
+          <include refid="srv_inst_list"/>
+        FROM
+        acp_srv_instance_detail asid
+        LEFT JOIN acp_srv_version_detail asvd ON asid.srv_version_id = asvd.srv_version_id
+        LEFT JOIN acp_srv_detail asd ON asvd.srv_id = asd.srv_id
+        LEFT JOIN acp_app_detail aad ON asid.app_id = aad.app_id
+        LEFT JOIN acp_srv_scale_rule rule ON rule.srv_inst_id = asid.srv_inst_id
+        <where>
+            <if test="srvVersionId != null and srvVersionId!=''">
+                AND asid.srv_version_id = #{srvVersionId,jdbcType=INTEGER}
+            </if>
+            <if test="appNameEn != null and appNameEn!=''">
+                AND aad.app_name_en = #{appNameEn,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status!=''">
+                AND asid.srv_inst_status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="history != null and history!=''">
+                AND asid.history = #{history,jdbcType=INTEGER}
+            </if>
+            <if test="noHistory != null and noHistory!=''">
+                AND asid.history != #{noHistory,jdbcType=INTEGER}
+            </if>
+            <if test="srvId != null and srvId!=''">
+                AND asd.srv_id = #{srvId,jdbcType=INTEGER}
+            </if>
+            <if test="srvNameEn != null and srvNameEn!=''">
+                AND asd.srv_name_en = #{srvNameEn,jdbcType=VARCHAR}
+            </if>
+            <if test="appId != null and appId!=''">
+                AND aad.app_id = #{appId,jdbcType=INTEGER}
+            </if>
+            <if test="appNameEn != null and appNameEn!=''">
+                AND aad.app_name_en = #{appNameEn,jdbcType=VARCHAR}
+            </if>
+            <if test="condition != null and condition!=''">
+                AND (asvd.srv_version LIKE concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+                OR aad.app_name_zh LIKE concat(concat('%',#{condition, jdbcType=VARCHAR}),'%'))
+            </if>
+        </where>
+        ORDER BY asid.create_time DESC
+    </select>
+
+    <!-- 根据主键删除 -->
+    <delete id="doDeleteById" parameterType="java.lang.Integer">
+    delete from acp_srv_instance_detail
+    where srv_inst_id = #{srvInstId,jdbcType=INTEGER}
+  </delete>
+
+    <!-- 插入服务实例详情 -->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.appservice.model.SrvInstDetail">
+        <selectKey resultType="java.lang.Integer" keyProperty="srvInstId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_srv_instance_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            srv_inst_id,
+            <if test="srvVersionId != null">
+                srv_version_id,
+            </if>
+            <if test="srvInstNum != null">
+                srv_inst_num,
+            </if>
+            <if test="cpu != null">
+                cpu,
+            </if>
+            <if test="mem != null">
+                mem,
+            </if>
+            <if test="domainPrefix != null">
+                domain_prefix,
+            </if>
+            <if test="domainSuffix != null">
+                domain_suffix,
+            </if>
+            <if test="nodePort != null">
+                node_port,
+            </if>
+            <if test="storageQuota != null">
+                storage_quota,
+            </if>
+            <if test="appId != null">
+                app_id,
+            </if>
+            <if test="appNameZh != null">
+                app_name_zh,
+            </if>
+            <if test="startOrder != null">
+                start_order,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="srvInstStatus != null">
+                srv_inst_status,
+            </if>
+            <if test="history != null">
+                history,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{srvInstId,jdbcType=INTEGER},
+            <if test="srvVersionId != null">
+                #{srvVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="srvInstNum != null">
+                #{srvInstNum,jdbcType=TINYINT},
+            </if>
+            <if test="cpu != null">
+                #{cpu,jdbcType=VARCHAR},
+            </if>
+            <if test="mem != null">
+                #{mem,jdbcType=VARCHAR},
+            </if>
+            <if test="domainPrefix != null">
+                #{domainPrefix,jdbcType=VARCHAR},
+            </if>
+            <if test="domainSuffix != null">
+                #{domainSuffix,jdbcType=VARCHAR},
+            </if>
+            <if test="nodePort != null">
+                #{nodePort,jdbcType=VARCHAR},
+            </if>
+            <if test="storageQuota != null">
+                #{storageQuota,jdbcType=INTEGER},
+            </if>
+            <if test="appId != null">
+                #{appId,jdbcType=INTEGER},
+            </if>
+            <if test="appNameZh != null">
+                #{appNameZh,jdbcType=VARCHAR},
+            </if>
+            <if test="startOrder != null">
+                #{startOrder,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="srvInstStatus != null">
+                #{srvInstStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="history != null">
+                #{history,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 更新服务实例详情 -->
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.appservice.model.SrvInstDetail">
+        update acp_srv_instance_detail
+        <set>
+            <if test="srvVersionId != null">
+                srv_version_id = #{srvVersionId,jdbcType=INTEGER},
+            </if>
+            <if test="srvInstNum != null">
+                srv_inst_num = #{srvInstNum,jdbcType=TINYINT},
+            </if>
+            <if test="cpu != null">
+                cpu = #{cpu,jdbcType=VARCHAR},
+            </if>
+            <if test="mem != null">
+                mem = #{mem,jdbcType=VARCHAR},
+            </if>
+            <if test="domainPrefix != null">
+                domain_prefix = #{domainPrefix,jdbcType=VARCHAR},
+            </if>
+            <if test="domainSuffix != null">
+                domain_suffix = #{domainSuffix,jdbcType=VARCHAR},
+            </if>
+            <if test="nodePort != null">
+                node_port = #{nodePort,jdbcType=VARCHAR},
+            </if>
+            <if test="storageQuota != null">
+                storage_quota = #{storageQuota,jdbcType=INTEGER},
+            </if>
+            <if test="appId != null">
+                app_id = #{appId,jdbcType=INTEGER},
+            </if>
+            <if test="appNameZh != null">
+                app_name_zh = #{appNameZh,jdbcType=VARCHAR},
+            </if>
+            <if test="startOrder != null">
+                start_order = #{startOrder,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="srvInstStatus != null">
+                srv_inst_status = #{srvInstStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="history != null">
+                history = #{history,jdbcType=INTEGER},
+            </if>
+        </set>
+        where srv_inst_id = #{srvInstId,jdbcType=INTEGER}
+    </update>
+
+</mapper>

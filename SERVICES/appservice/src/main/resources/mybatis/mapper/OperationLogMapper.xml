@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.OperationLogMapper" >
+
+  <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.OperationLog" >
+    <id column="log_id" property="logId" jdbcType="INTEGER" />
+    <result column="srv_operation_id" property="srvOperationId" jdbcType="INTEGER" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="file_size" property="fileSize" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="ResultMapWithBLOBs" type="com.cloud.paas.appservice.model.OperationLog" extends="BaseResultMap" >
+    <result column="log_content" property="logContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    log_id, srv_operation_id, file_name, file_size, create_time, update_time, creator
+  </sql>
+
+  <sql id="Blob_Column_List" >
+    log_content
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from acp_operation_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from acp_operation_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.cloud.paas.appservice.model.OperationLog" >
+    <selectKey resultType="java.lang.Integer" keyProperty="logId" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    INSERT INTO acp_operation_log (
+      log_id,
+      srv_operation_id,
+      file_name,
+      file_size,
+      create_time,
+      update_time,
+      creator,
+      log_content
+    )
+    VALUES
+    (
+      #{logId,jdbcType=INTEGER},
+      #{srvOperationId,jdbcType=INTEGER},
+      #{fileName,jdbcType=VARCHAR},
+      #{fileSize,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP},
+      #{creator,jdbcType=VARCHAR},
+      #{logContent,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <insert id="doInsertByBean" parameterType="com.cloud.paas.appservice.model.OperationLog" >
+
+    insert into acp_operation_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      log_id,
+      <if test="srvOperationId != null" >
+        srv_operation_id,
+      </if>
+      <if test="fileName != null" >
+        file_name,
+      </if>
+      <if test="fileSize != null" >
+        file_size,
+      </if>
+      <!--<if test="createTime != null" >-->
+        <!--create_time,-->
+      <!--</if>-->
+      create_time,
+      <!--<if test="updateTime != null" >-->
+        <!--update_time,-->
+      <!--</if>-->
+      update_time,
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="logContent != null" >
+        log_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{logId,jdbcType=INTEGER},
+      <if test="srvOperationId != null" >
+        #{srvOperationId,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null" >
+        #{fileSize,jdbcType=INTEGER},
+      </if>
+      <!--<if test="createTime != null" >-->
+        <!--#{createTime,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      now(),
+      <!--<if test="updateTime != null" >-->
+        <!--#{updateTime,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      now(),
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="logContent != null" >
+        #{logContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.paas.appservice.model.OperationLog" >
+    update acp_operation_log
+    <set >
+      <if test="srvOperationId != null" >
+        srv_operation_id = #{srvOperationId,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null" >
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null" >
+        file_size = #{fileSize,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="logContent != null" >
+        log_content = #{logContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cloud.paas.appservice.model.OperationLog" >
+    update acp_operation_log
+    set srv_operation_id = #{srvOperationId,jdbcType=INTEGER},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      log_content = #{logContent,jdbcType=LONGVARCHAR}
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.cloud.paas.appservice.model.OperationLog" >
+    update acp_operation_log
+    set srv_operation_id = #{srvOperationId,jdbcType=INTEGER},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR}
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+</mapper>

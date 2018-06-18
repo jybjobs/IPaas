@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.paas.systemmanager.dao.DictItemDAO">
+
+    <resultMap id="BaseResultMap" type="com.cloud.paas.systemmanager.model.DictItem">
+        <id column="dict_item_id" jdbcType="INTEGER" property="dictItemId"/>
+        <result column="dict_type_id" jdbcType="INTEGER" property="dictTypeId"/>
+        <result column="dict_item_name" jdbcType="VARCHAR" property="dictItemName"/>
+        <result column="dict_item_code" jdbcType="VARCHAR" property="dictItemCode"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    dict_item_id, dict_type_id, dict_item_name, dict_item_code, sort, creator, create_time, 
+    update_time
+    </sql>
+
+    <select id="doFindById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+            acp_dict_item
+        where
+            dict_item_id = #{dictItemId,jdbcType=INTEGER}
+    </select>
+
+    <!--根据dictItemName查找信息-->
+    <select id="doFindByDictItemName" parameterType="com.cloud.paas.systemmanager.model.DictItem" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_dict_item
+        <where>
+            del_flag = 0
+            <if test="dictItemName!=null and dictItemName!=''">
+                AND dict_item_name = #{dictItemName,jdbcType=VARCHAR}
+            </if>
+
+            <if test="dictTypeId!=null and dictTypeId!=''">
+                AND dict_type_id = #{dictTypeId,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+    <!--根据dictItemCode查找-->
+    <select id="doFindByDictItemCode" parameterType="com.cloud.paas.systemmanager.model.DictItem" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_dict_item
+        <where>
+            del_flag = 0
+            <if test="dictItemCode!=null and dictItemCode!=''">
+                AND dict_item_code = #{dictItemCode,jdbcType=VARCHAR}
+            </if>
+
+            <if test="dictTypeId!=null and dictTypeId!=''">
+                AND dict_type_id = #{dictTypeId,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+    <!--根据typeId查找-->
+    <select id="doSearchByTypeId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_dict_item
+        where
+        dict_type_id = #{dictTypeId,jdbcType=INTEGER}
+        AND del_flag=0
+        order BY sort ASC
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from
+        acp_dict_item
+    where
+        dict_item_id = #{dictItemId,jdbcType=INTEGER}
+    </delete>
+
+    <!--新建键值对-->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.systemmanager.model.DictItem">
+        <selectKey keyProperty="dictItemId" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into
+            acp_dict_item (
+            dict_type_id,
+            dict_item_name,
+            dict_item_code,
+            sort,
+            creator,
+            create_time)
+        values (
+
+            #{dictTypeId,jdbcType=INTEGER},
+            #{dictItemName,jdbcType=VARCHAR},
+            #{dictItemCode,jdbcType=VARCHAR},
+            #{sort,jdbcType=INTEGER},
+            #{creator,jdbcType=VARCHAR},
+            now()
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.cloud.paas.systemmanager.model.DictItem">
+        <selectKey keyProperty="dictItemId" order="BEFORE" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_dict_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            dict_item_id,
+            <if test="dictTypeId != null">
+                dict_type_id,
+            </if>
+            <if test="dictItemName != null">
+                dict_item_name,
+            </if>
+            <if test="dictItemCode != null">
+                dict_item_code,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{dictItemId,jdbcType=INTEGER},
+            <if test="dictTypeId != null">
+                #{dictTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="dictItemName != null">
+                #{dictItemName,jdbcType=VARCHAR},
+            </if>
+            <if test="dictItemCode != null">
+                #{dictItemCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                now(),
+            </if>
+
+        </trim>
+    </insert>
+
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.systemmanager.model.DictItem">
+        update acp_dict_item
+        <set>
+            <if test="dictItemName != null">
+                dict_item_name = #{dictItemName,jdbcType=VARCHAR},
+            </if>
+            <if test="dictItemCode != null">
+                dict_item_code = #{dictItemCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+
+                update_time = now(),
+
+        </set>
+        where dict_item_id = #{dictItemId,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.cloud.paas.systemmanager.model.DictItem">
+        update
+            acp_dict_item
+        set
+            dict_type_id = #{dictTypeId,jdbcType=INTEGER},
+            dict_item_name = #{dictItemName,jdbcType=VARCHAR},
+            dict_item_code = #{dictItemCode,jdbcType=VARCHAR},
+            sort = #{sort,jdbcType=INTEGER},
+            update_time = now()
+        where
+            dict_item_id = #{dictItemId,jdbcType=INTEGER}
+    </update>
+
+    <!--查询所有内容-->
+    <select id="doSearchList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        acp_dict_item
+        order BY
+        sort ASC
+    </select>
+
+    <!--设置删除状态-->
+    <update id="doChangeDel" parameterType="com.cloud.paas.systemmanager.model.DictItem">
+        update acp_dict_item
+        <set>
+            update_time = now(),
+            del_flag=#{delFlag,jdbcType=INTEGER},
+        </set>
+        where dict_item_id = #{dictItemId,jdbcType=INTEGER}
+    </update>
+</mapper>

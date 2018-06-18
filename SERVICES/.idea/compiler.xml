@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="appservice" />
+        <module name="common" />
+        <module name="containerconsole" />
+        <module name="imageregistry" />
+        <module name="monitor" />
+        <module name="systemmanager" />
+        <module name="taskmanager" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="acp" target="1.5" />
+      <module name="appservice" target="1.7" />
+      <module name="common" target="1.5" />
+      <module name="containerconsole" target="1.8" />
+      <module name="imageregistry" target="1.7" />
+      <module name="monitor" target="1.7" />
+      <module name="systemmanager" target="1.7" />
+      <module name="taskmanager" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

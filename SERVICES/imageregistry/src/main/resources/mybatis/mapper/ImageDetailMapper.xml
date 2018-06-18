@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.imageregistry.dao.ImageDetailDAO">
+    <resultMap id="BaseResultMap"
+               type="com.cloud.paas.imageregistry.model.ImageDetail">
+        <id column="image_id" property="imageId" jdbcType="BIGINT"/>
+        <result column="image_name_zh" property="imageNameZh" jdbcType="VARCHAR"/>
+        <result column="image_name_en" property="imageNameEn" jdbcType="VARCHAR"/>
+        <result column="image_remark" property="imageRemark" jdbcType="VARCHAR"/>
+        <result column="image_type" property="imageType" jdbcType="INTEGER"/>
+        <result column="image_size" property="imageSize" jdbcType="DECIMAL"/>
+        <result column="image_picture_path" property="imagePicturePath" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <!--获取镜像仓库下的镜像列表所对应的resultMap-->
+    <resultMap id="selectImageListResultType" type="com.cloud.paas.imageregistry.vo.image.ImageListVO">
+        <!--镜像详情-->
+        <id column="image_id" property="imageId"></id>
+        <result column="image_name_zh" property="imageNameZh"></result>
+        <result column="image_name_en" property="imageNameEn"></result>
+        <result column="image_remark" property="imageRemark"></result>
+        <result column="image_type" property="imageType"></result>
+        <result column="image_size" property="imageSize"></result>
+        <result column="image_picture_path" property="imagePicturePath"/>
+        <result column="image_detail_info_creator" property="creator"></result>
+        <result column="image_detail_info_create_time" property="createTime"></result>
+        <result column="image_detail_info_update_time" property="updateTime"></result>
+
+        <!--一对多-->
+        <collection property="imageVersions" ofType="com.cloud.paas.imageregistry.vo.image.ImageListVO">
+            <id column="image_version_id" property="imageVersionId"></id>
+            <result column="image_id" property="imageId"></result>
+            <result column="image_version" property="imageVersion"></result>
+            <result column="image_status" property="imageStatus"></result>
+            <result column="image_stage" property="imageStage"></result>
+            <result column="image_version_remark" property="imageVersionRemark"></result>
+            <result column="image_auth" property="imageAuth"></result>
+            <result column="image_version_size" property="imageVersionSize"></result>
+            <result column="image_upload_way" property="imageUploadWay"></result>
+            <result column="image_upload_name" property="imageUploadName"></result>
+            <result column="image_path" property="imagePath"></result>
+            <result column="dockfile_id" property="dockfileId"></result>
+            <result column="busi_pkg_version_id" property="busiPkgVersionId"></result>
+            <result column="image_source" property="imageSource"></result>
+            <result column="image_source_registry" property="imageSourceRegistry"></result>
+            <result column="image_version_ip" property="hostIp"></result>
+            <result column="image_version_port" property="port"></result>
+            <result column="image_version_username" property="userName"></result>
+            <result column="image_version_passwd" property="passwd"></result>
+            <result column="registry_id" property="registryId"></result>
+            <result column="image_version_creator" property="creator"></result>
+            <result column="image_version_create_time" property="createTime"></result>
+            <result column="image_version_update_time" property="updateTime"></result>
+        </collection>
+    </resultMap>
+
+    <!--获取镜像仓库下的镜像列表所对应的resultMap-->
+    <resultMap id="selectImageVersionList" type="com.cloud.paas.imageregistry.vo.image.ImageListVO">
+        <!--镜像详情-->
+        <id column="image_id" property="imageId"></id>
+        <result column="image_name_zh" property="imageNameZh"></result>
+        <result column="image_name_en" property="imageNameEn"></result>
+        <result column="image_remark" property="imageRemark"></result>
+        <result column="image_type" property="imageType"></result>
+        <result column="image_size" property="imageSize"></result>
+        <result column="image_picture_path" property="imagePicturePath"/>
+        <result column="image_detail_info_creator" property="creator"></result>
+        <result column="image_detail_info_create_time" property="createTime"></result>
+        <result column="image_detail_info_update_time" property="updateTime"></result>
+        <!--一对多-->
+        <collection property="imageVersionVO" ofType="com.cloud.paas.imageregistry.vo.image.ImageVersionVO">
+            <id column="image_version_id" property="imageVersionId"></id>
+            <result column="image_id" property="imageId"></result>
+            <result column="image_version" property="imageVersion"></result>
+            <result column="image_status" property="imageStatus"></result>
+            <result column="image_stage" property="imageStage"></result>
+            <result column="image_version_remark" property="imageVersionRemark"></result>
+            <result column="image_auth" property="imageAuth"></result>
+            <result column="image_version_size" property="imageVersionSize"></result>
+            <result column="image_upload_way" property="imageUploadWay"></result>
+            <result column="image_upload_name" property="imageUploadName"></result>
+            <result column="image_path" property="imagePath"></result>
+            <result column="dockfile_id" property="dockfileId"></result>
+            <result column="busi_pkg_version_id" property="busiPkgVersionId"></result>
+            <result column="image_source" property="imageSource"></result>
+            <result column="image_source_registry" property="imageSourceRegistry"></result>
+            <result column="image_version_ip" property="hostIp"></result>
+            <result column="image_version_port" property="port"></result>
+            <result column="image_version_username" property="userName"></result>
+            <result column="image_version_passwd" property="passwd"></result>
+            <result column="registry_id" property="registryId"></result>
+            <result column="image_version_creator" property="creator"></result>
+            <result column="image_version_create_time" property="createTime"></result>
+            <result column="image_version_update_time" property="updateTime"></result>
+            <result column="busi_pkg_stage" property="busiPkgStage" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      image_id, image_name_zh, image_name_en, image_remark, image_type, image_size, image_picture_path,creator, create_time,
+      update_time
+  </sql>
+
+    <!--获取镜像仓库下的镜像列表-->
+    <select id="selectImageList" parameterType="int" resultMap="selectImageListResultType">
+      SELECT
+          image_detail_info.image_id,
+          image_detail_info.image_name_zh,
+          image_detail_info.image_name_en,
+          image_detail_info.image_remark,
+          image_detail_info.image_type,
+          image_detail_info.image_size,
+          image_detail_info.image_picture_path,
+          image_detail_info.creator AS image_detail_info_creator,
+          image_detail_info.create_time AS image_detail_info_create_time,
+          image_detail_info.update_time AS image_detail_info_update_time,
+          image_version.image_version_id,
+          image_version.image_version,
+          image_version.image_status,
+          image_version.image_stage,
+          image_version.image_version_remark,
+          image_version.image_auth,
+          image_version.image_version_size,
+          image_version.image_upload_way,
+          image_version.image_upload_name,
+          image_version.image_path,
+          image_version.dockfile_id,
+          image_version.busi_pkg_version_id,
+          image_version.image_source,
+          image_version.image_source_registry,
+          image_version.host_ip,
+          image_version.port,
+          image_version.user_name,
+          image_version.passwd,
+          image_version.registry_id,
+          image_version.creator AS image_version_creator,
+          image_version.create_time AS image_version_create_time,
+          image_version.update_time AS image_version_update_time
+      FROM
+          acp_registry_detail_info AS registry_detail_info,
+          acp_image_detail_info AS image_detail_info,
+          acp_image_version AS image_version,
+          acp_image_registry_relation
+      WHERE
+         <!--
+          registry_detail_info.registry_id = acp_image_registry_relation.registry_id
+          AND image_detail_info.image_id = acp_image_registry_relation.image_id
+          AND image_detail_info.image_id = image_version.image_id
+          AND registry_detail_info.registry_id=#{registryId,jdbcType=INTEGER}
+          -->
+          registry_detail_info.registry_id = image_version.registry_id  AND
+          image_detail_info.image_id = image_version.image_id           AND
+          registry_detail_info.registry_id = 1
+    </select>
+
+    <!--根据条件查询用户下的镜像详细信息-->
+    <select id="selectAllImagesByCondition" resultMap="BaseResultMap"
+            parameterType="com.cloud.paas.imageregistry.model.ImageDetail">
+        SELECT
+        *
+        FROM
+        acp_image_detail_info AS info
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="imageNameZh!=null and imageNameZh!=''">
+                info.image_name_zh like concat('%',#{imageNameZh},'%')
+            </if>
+
+            <if test="imageType!=null and imageType!=''">
+                and info.image_type like concat('%',#{imageType},'%')
+            </if>
+        </trim>
+    </select>
+
+    <!--获取全量镜像列表-->
+    <select id="selectAllImages" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from acp_image_detail_info
+    </select>
+
+    <!--通过imageId获取镜像信息-->
+    <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+          <include refid="Base_Column_List"/>
+        from acp_image_detail_info
+        where image_id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!--通过imageId删除镜像信息-->
+    <delete id="doDeleteById" parameterType="java.lang.Integer">
+        delete from acp_image_detail_info
+        where image_id = #{imageId,jdbcType=BIGINT}
+  </delete>
+
+    <!--新建镜像-->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.imageregistry.model.ImageDetail">
+        <selectKey resultType="java.lang.Long" keyProperty="imageId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_image_detail_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            image_id,
+            <if test="imageNameZh != null">
+                image_name_zh,
+            </if>
+            <if test="imageNameEn != null">
+                image_name_en,
+            </if>
+            <if test="imageRemark != null">
+                image_remark,
+            </if>
+            <if test="imageType != null">
+                image_type,
+            </if>
+            <if test="imageSize != null">
+                image_size,
+            </if>
+            <if test="imagePicturePath != null">
+                image_picture_path,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+                create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{imageId,jdbcType=BIGINT},
+            <if test="imageNameZh != null">
+                #{imageNameZh,jdbcType=VARCHAR},
+            </if>
+            <if test="imageNameEn != null">
+                #{imageNameEn,jdbcType=VARCHAR},
+            </if>
+            <if test="imageRemark != null">
+                #{imageRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="imageType != null">
+                #{imageType,jdbcType=INTEGER},
+            </if>
+            <if test="imageSize != null">
+                #{imageSize,jdbcType=DECIMAL},
+            </if>
+            <if test="imagePicturePath != null">
+                #{imagePicturePath,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+                now(3)
+        </trim>
+    </insert>
+
+    <!--修改镜像信息-->
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.imageregistry.model.ImageDetail">
+
+        update acp_image_detail_info
+        <set>
+            <if test="imageNameZh != null and imageNameZh!=''">
+                image_name_zh = #{imageNameZh,jdbcType=VARCHAR},
+            </if>
+
+            <if test="imageRemark != null and imageRemark!=''">
+                image_remark = #{imageRemark,jdbcType=VARCHAR},
+            </if>
+                update_time = now(3)
+        </set>
+        where image_id = #{imageId,jdbcType=BIGINT}
+    </update>
+
+    <!--中文名称校验-->
+    <select id="selectZhNameForVerify" resultMap="BaseResultMap"
+            parameterType="java.lang.String">
+        SELECT
+        *
+        FROM
+        acp_image_detail_info AS info
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="_parameter!=null and _parameter!=''">
+                and info.image_name_zh = #{imageNameZh,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+
+    <!--英文名称校验-->
+    <select id="selectEnNameForVerify" resultMap="BaseResultMap"
+            parameterType="java.lang.String">
+        SELECT
+        *
+        FROM
+        acp_image_detail_info AS info
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="_parameter!=null and _parameter!=''">
+                and info.image_name_en = #{imageNameEn,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+</mapper>

@@ -1,0 +1,11 @@
+server:
+  port: 8081
+
+
+logging:
+  config:
+  file:
+  level: debug
+  pattern:
+    file:
+    console:

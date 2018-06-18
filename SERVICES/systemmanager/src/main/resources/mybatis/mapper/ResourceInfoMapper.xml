@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.systemmanager.dao.ResourceInfoDAO">
+
+  <!--映射关系-->
+  <resultMap id="BaseResultMap" type="com.cloud.paas.systemmanager.model.ResourceInfo" >
+    <id column="res_id" property="resId" jdbcType="INTEGER" />
+    <result column="cpu" property="cpu" jdbcType="REAL" />
+    <result column="mem" property="mem" jdbcType="REAL" />
+    <result column="disk" property="disk" jdbcType="REAL" />
+    <result column="net_bandwidth" property="netBandwidth" jdbcType="REAL" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <!--总资源的所有字段-->
+  <sql id="Base_Column_List" >
+    res_id, cpu, mem, disk, net_bandwidth, creator, create_time, update_time
+  </sql>
+  <!--二表条件查找剩余资源配额-->
+  <select id="getRestResource" resultMap="BaseResultMap">
+   SELECT
+	(acp_res_detail_info.cpu - SUM(acp_tenant_detail_info.cpu_quota)) as cpu,
+    (acp_res_detail_info.mem - SUM(acp_tenant_detail_info.mem_quota)) as mem,
+    (acp_res_detail_info.disk - SUM(acp_tenant_detail_info.disk_quota)) as disk
+  FROM
+	acp_res_detail_info,
+	acp_tenant_detail_info
+  GROUP BY
+	acp_res_detail_info.cpu,acp_res_detail_info.mem,acp_res_detail_info.disk
+  </select>
+  <!--新建资源-->
+  <insert id="doInsertByBean" parameterType="com.cloud.paas.systemmanager.model.ResourceInfo">
+    <selectKey keyProperty="resId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_res_detail_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+
+      <if test="cpu != null and cpu != 0">
+        cpu,
+      </if>
+      <if test="mem != null and mem != 0">
+        mem,
+      </if>
+      <if test="disk != null and disk != 0">
+        disk,
+      </if>
+      <if test="netBandwidth != null and netBandwidth != 0">
+        netBandwidth,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+      <if test="cpu != null">
+        #{cpu,jdbcType=REAL},
+      </if>
+      <if test="mem != null">
+        #{mem,jdbcType=REAL},
+      </if>
+      <if test="disk != null">
+        #{disk,jdbcType=REAL},
+      </if>
+      <if test="netBandwidth != null">
+        #{netBandwidth,jdbcType=REAL},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <!-- 获取全量资源列表 -->
+  <select id="listResources" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from acp_res_detail_info
+  </select>
+
+  <!--更新资源-->
+  <update id="doUpdateByBean" parameterType="com.cloud.paas.systemmanager.model.ResourceInfo">
+    update acp_res_detail_info
+    <set>
+      <if test="cpu != null">
+        cpu = #{cpu,jdbcType=REAL},
+      </if>
+      <if test="mem != null">
+        mem = #{mem,jdbcType=REAL},
+      </if>
+      <if test="disk != null">
+        disk = #{disk,jdbcType=REAL},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where res_id = #{resId,jdbcType=INTEGER}
+  </update>
+
+</mapper>

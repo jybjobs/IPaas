@@ -1,0 +1,41 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE generatorConfiguration-->
+        <!--PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"-->
+        <!--"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">-->
+
+<!--<generatorConfiguration>-->
+    <!--<context id="acp" targetRuntime="MyBatis3">-->
+        <!--<jdbcConnection driverClass="com.mysql.jdbc.Driver"-->
+                        <!--connectionURL="jdbc:mysql://10.1.161.182:3306/acp"-->
+                        <!--userId="root"-->
+                        <!--password="jshx@123">-->
+        <!--</jdbcConnection>-->
+
+        <!--<javaTypeResolver >-->
+            <!--<property name="forceBigDecimals" value="false" />-->
+        <!--</javaTypeResolver>-->
+
+        <!--<javaModelGenerator targetPackage="com.cloud.paas.appservice.model" targetProject="C:\Users\17798\Desktop\PaaS\鸿信PaaS平台\acp\04_Develop\appservice\src\main\java">-->
+            <!--<property name="enableSubPackages" value="true" />-->
+            <!--<property name="trimStrings" value="true" />-->
+        <!--</javaModelGenerator>-->
+
+        <!--<sqlMapGenerator targetPackage="mybatis.mapper"  targetProject="C:\Users\17798\Desktop\PaaS\鸿信PaaS平台\acp\04_Develop\appservice\src\main\resources">-->
+            <!--<property name="enableSubPackages" value="true" />-->
+        <!--</sqlMapGenerator>-->
+
+        <!--<javaClientGenerator type="XMLMAPPER" targetPackage="com.cloud.paas.appservice.dao" targetProject="C:\Users\17798\Desktop\PaaS\鸿信PaaS平台\acp\04_Develop\appservice\src\main\java">-->
+            <!--<property name="enableSubPackages" value="true" />-->
+        <!--</javaClientGenerator>-->
+
+        <!--<table  tableName="acp_srv_instance_detaill" domainObjectName="SrvInstDetail" >-->
+            <!--<property name="enableCountByExample" value ="false" />-->
+            <!--<property name="enableUpdateByExample" value="false" />-->
+            <!--<property name="enableDeleteByExample" value="false" />-->
+            <!--<property name="enableSelectByExample" value="false" />-->
+            <!--<property name="selectByExampleQueryId" value="false" />-->
+            <!--<generatedKey column="srv_inst_id" sqlStatement="Mysql"/>-->
+        <!--</table>-->
+
+    <!--</context>-->
+<!--</generatorConfiguration>-->

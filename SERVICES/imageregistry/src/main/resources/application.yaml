@@ -1,0 +1,56 @@
+spring:
+  aop:
+      proxy-target-class: true
+  profiles:
+    active: dev
+  datasource:
+   # type: com.alibaba.druid.pool.DruidDataSource
+    type: org.apache.tomcat.jdbc.pool.DataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://acp.mysql.paas.jsict.local:3306/acp?useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true
+#    username: acp
+#    password: jshx_123
+    url: jdbc:mysql://127.0.0.1:3306/ipaas?useSSL=false
+    username: root
+    password:
+    connection-timeout: 60000
+  session:
+    store-type: none
+  http:
+    multipart:
+      max-file-size: 10000Mb
+      max-request-size: 10000Mb
+#  jpa:
+#     hibernate:
+#       ddl-auto: create
+#     show-sql: true
+
+mybatis:
+  config-locations: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+mapper:
+    mappers:
+        - tk.mybatis.springboot.util.MyMapper
+    not-empty: false
+    identity: MYSQL
+
+pagehelper:
+  #dialect: com.github.pagehelper.dialect.helper.Dialect
+  helperDialect: mysql
+  reasonable: true
+  params: count=countSql;
+  supportMethodsArguments: true
+  #rowBoundsWithCount: true
+  #pageSizeZero: true
+  autoDialect: true
+  closeConn: false
+
+
+
+
+
+
+
+
+debug: true

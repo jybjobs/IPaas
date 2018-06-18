@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cloud.paas.appservice.dao.AppSrvRelDAO" >
+  <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.AppSrvRel" >
+    <id column="rel_id" property="relId" jdbcType="INTEGER" />
+    <result column="app_id" property="appId" jdbcType="INTEGER" />
+    <result column="srv_id" property="srvId" jdbcType="INTEGER" />
+    <result column="start_order" property="startOrder" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    rel_id, app_id, srv_id, start_order, create_time, update_time, creator
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from
+        acp_app_srv_rel
+    where
+        rel_id = #{relId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteBySrvId" parameterType="java.lang.Integer">
+    delete
+    from
+        acp_app_srv_rel
+    where
+       srv_id = #{srvId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete
+    from
+        acp_app_srv_rel
+    where
+        rel_id = #{relId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert"
+          parameterType="com.cloud.paas.appservice.model.AppSrvRel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="relId" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_app_srv_rel (rel_id, app_id, srv_id, 
+      start_order, create_time, update_time, 
+      creator)
+    values (#{relId,jdbcType=INTEGER}, #{appId,jdbcType=INTEGER}, #{srvId,jdbcType=INTEGER}, 
+      #{startOrder,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{creator,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="doInsertByBean"
+          parameterType="com.cloud.paas.appservice.model.AppSrvRel" >
+    <selectKey resultType="java.lang.Integer" keyProperty="relId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into acp_app_srv_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        rel_id,
+      <if test="appId != null" >
+        app_id,
+      </if>
+      <if test="srvId != null" >
+        srv_id,
+      </if>
+      <if test="startOrder != null" >
+        start_order,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{relId,jdbcType=INTEGER},
+      <if test="appId != null" >
+        #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="srvId != null" >
+        #{srvId,jdbcType=INTEGER},
+      </if>
+      <if test="startOrder != null" >
+        #{startOrder,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="doUpdateByBean"
+          parameterType="com.cloud.paas.appservice.model.AppSrvRel" >
+    update acp_app_srv_rel
+    <set >
+      <if test="appId != null" >
+        app_id = #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="startOrder != null" >
+        start_order = #{startOrder,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where srv_id = #{srvId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.cloud.paas.appservice.model.AppSrvRel" >
+    update
+      acp_app_srv_rel
+    set
+      app_id = #{appId,jdbcType=INTEGER},
+      srv_id = #{srvId,jdbcType=INTEGER},
+      start_order = #{startOrder,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR}
+    where
+      rel_id = #{relId,jdbcType=INTEGER}
+  </update>
+</mapper>

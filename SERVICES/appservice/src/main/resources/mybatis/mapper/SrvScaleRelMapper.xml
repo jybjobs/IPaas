@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.appservice.dao.SrvScaleRelDAO" >
+
+  <!-- 服务扩缩容关系对象的映射关系 -->
+  <resultMap id="BaseResultMap" type="com.cloud.paas.appservice.model.SrvScaleRel" >
+    <id column="rel_id" property="relId" jdbcType="INTEGER" />
+    <result column="srv_id" property="srvId" jdbcType="INTEGER" />
+    <result column="rule_id" property="ruleId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    rel_id, srv_id, rule_id, create_time, update_time, creator
+  </sql>
+
+  <!--id查询 -->
+  <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from acp_srv_scale_rel
+    where rel_id = #{relId,jdbcType=INTEGER}
+  </select>
+
+  <!--全量查询 -->
+  <select id="doFindByAllId" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from acp_srv_scale_rel
+  </select>
+
+  <!--删除 -->
+  <delete id="doDeleteById" parameterType="java.lang.Integer" >
+    delete from acp_srv_scale_rel
+    where srv_id = #{srvId,jdbcType=INTEGER}
+  </delete>
+
+  <!--插入 -->
+  <insert id="doInsertByBean" parameterType="com.cloud.paas.appservice.model.SrvScaleRel" >
+    insert into acp_srv_scale_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="relId != null" >
+        rel_id,
+      </if>
+      <if test="srvId != null" >
+        srv_id,
+      </if>
+      <if test="ruleId != null" >
+        rule_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="relId != null" >
+        #{relId,jdbcType=INTEGER},
+      </if>
+      <if test="srvId != null" >
+        #{srvId,jdbcType=INTEGER},
+      </if>
+      <if test="ruleId != null" >
+        #{ruleId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        now(3),
+      </if>
+      <if test="updateTime != null" >
+        now(3),
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <update id="updateBySrvScaleRel" parameterType="com.cloud.paas.appservice.model.SrvScaleRel" >
+    update acp_srv_scale_rel
+    <set >
+      <if test="srvId != null" >
+        srv_id = #{srvId,jdbcType=INTEGER},
+      </if>
+      <if test="ruleId != null" >
+        rule_id = #{ruleId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = now(3),
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rel_id = #{relId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateById" parameterType="com.cloud.paas.appservice.model.SrvScaleRel" >
+    update acp_srv_scale_rel
+    set srv_id = #{srvId,jdbcType=INTEGER},
+      rule_id = #{ruleId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now(3),
+      creator = #{creator,jdbcType=VARCHAR}
+    where rel_id = #{relId,jdbcType=INTEGER}
+  </update>
+</mapper>

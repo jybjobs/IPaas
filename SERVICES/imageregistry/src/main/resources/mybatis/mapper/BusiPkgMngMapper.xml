@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cloud.paas.imageregistry.dao.BusiPkgMngDAO">
+
+    <!--<resultMap id="busiPkgIdForList" type="java.lang.Integer">-->
+            <!--<id column="busi_pkg_id" property="busiPkgId" jdbcType="INTEGER"/>-->
+    <!--</resultMap>-->
+    <resultMap id="busiPkgIdForList" type="java.lang.Integer">
+        <result column="busi_pkg_id"  jdbcType="INTEGER" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap"
+               type="com.cloud.paas.imageregistry.model.BusiPkgDetail">
+        <id column="busi_pkg_id" property="busiPkgId" jdbcType="INTEGER"/>
+        <result column="busi_pkg_name_zh" property="busiPkgNameZh" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_name_en" property="busiPkgNameEn" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_type" property="busiPkgType" jdbcType="INTEGER"/>
+        <result column="busi_pkg_remark" property="busiPkgRemark" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_auth" property="busiPkgAuth" jdbcType="INTEGER"/>
+        <result column="busi_pkg_size" property="busiPkgSize" jdbcType="DECIMAL"/>
+        <result column="busi_pkg_img_path" property="busiPkgImgPath" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <!-- 新增字段 -->
+        <result column="upload_way" property="uploadWay" jdbcType="INTEGER"/>
+        <result column="host_conf_id" property="hostConfId" jdbcType="INTEGER"/>
+        <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+        <result column="port" property="port" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="passwd" property="passwd" jdbcType="VARCHAR"/>
+        <result column="remote_file" property="remoteFile" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--获取业务包列表所对应的resultMap-->
+    <resultMap id="BusiPkgListVO"
+               type="com.cloud.paas.imageregistry.vo.busipkg.BusiPkgListVO" >
+        <!--业务包详情-->
+        <id column="busi_pkg_id" property="busiPkgId" jdbcType="INTEGER"/>
+        <result column="busi_pkg_name_zh" property="busiPkgNameZh" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_name_en" property="busiPkgNameEn" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_type" property="busiPkgType" jdbcType="INTEGER"/>
+        <result column="busi_pkg_remark" property="busiPkgRemark" jdbcType="VARCHAR"/>
+        <result column="busi_pkg_auth" property="busiPkgAuth" jdbcType="INTEGER"/>
+        <result column="busi_pkg_size" property="busiPkgSize" jdbcType="DECIMAL"/>
+        <result column="busi_pkg_img_path" property="busiPkgImgPath" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <!-- 新增字段 -->
+        <result column="upload_way" property="uploadWay" jdbcType="INTEGER"/>
+        <result column="host_conf_id" property="hostConfId" jdbcType="INTEGER"/>
+        <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+        <result column="port" property="port" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="passwd" property="passwd" jdbcType="VARCHAR"/>
+        <result column="remote_file" property="remoteFile" jdbcType="VARCHAR"/>
+
+        <!--一对多-->
+        <collection property="listBusiPkgVersion"
+                    ofType="com.cloud.paas.imageregistry.model.BusiPkgVersionDetail" javaType="ArrayList">
+            <id column="busi_pkg_version_id" property="busiPkgVersionId" jdbcType="INTEGER"/>
+            <result column="busi_pkg_id" property="busiPkgId" jdbcType="INTEGER"/>
+            <result column="busi_pkg_version" property="busiPkgVersion" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_version_size" property="busiPkgVersionSize" jdbcType="DECIMAL"/>
+            <result column="busi_pkg_postfix" property="busiPkgPostfix" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_version_remark" property="busiPkgVersionRemark" jdbcType="VARCHAR"/>
+            <result column="busi_pkg_status" property="busiPkgStatus" jdbcType="INTEGER"/>
+            <result column="busi_pkg_stage" property="busiPkgStage" jdbcType="INTEGER"/>
+            <result column="busi_pkg_reference" property="busiPkgReference" jdbcType="INTEGER"/>
+            <result column="upload_way" property="uploadWay" jdbcType="INTEGER"/>
+            <result column="upload_name" property="uploadName" jdbcType="VARCHAR"/>
+            <result column="path" property="path" jdbcType="VARCHAR"/>
+            <result column="host_conf_id" property="hostConfId" jdbcType="INTEGER"/>
+            <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+            <result column="port" property="port" jdbcType="DECIMAL"/>
+            <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+            <result column="passwd" property="passwd" jdbcType="VARCHAR"/>
+            <result column="version_creator" property="creator" jdbcType="VARCHAR"/>
+            <result column="version_create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="version_update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    busi_pkg_id, busi_pkg_name_zh, busi_pkg_name_en, busi_pkg_type, busi_pkg_remark,
+    busi_pkg_auth, busi_pkg_size, busi_pkg_img_path, creator, create_time, update_time,
+    upload_way,host_conf_id,host_ip,port,user_name,passwd,remote_file
+  </sql>
+
+    <!--分页查询-->
+    <select id="findBusiPkgIdListByExampleResult"
+            resultMap="BusiPkgListVO" parameterType="com.cloud.paas.imageregistry.qo.BusiPkgExample">
+         select
+        busi_pkg_detail_info.busi_pkg_id,
+        busi_pkg_detail_info.busi_pkg_name_zh,
+        busi_pkg_detail_info.busi_pkg_name_en,
+        busi_pkg_detail_info.busi_pkg_type,
+        busi_pkg_detail_info.busi_pkg_remark,
+        busi_pkg_detail_info.busi_pkg_auth,
+        busi_pkg_detail_info.busi_pkg_size,
+        busi_pkg_detail_info.busi_pkg_img_path,
+        busi_pkg_detail_info.creator,
+        busi_pkg_detail_info.create_time,
+        busi_pkg_detail_info.update_time,
+        busi_pkg_detail_info.upload_way,
+        busi_pkg_detail_info.host_conf_id,
+        busi_pkg_detail_info.host_ip,
+        busi_pkg_detail_info.port,
+        busi_pkg_detail_info.user_name,
+        busi_pkg_detail_info.passwd,
+        busi_pkg_detail_info.remote_file,
+
+        busi_pkg_version.busi_pkg_version_id,
+        busi_pkg_version.busi_pkg_id,
+        busi_pkg_version.busi_pkg_version,
+        busi_pkg_version.busi_pkg_version_size,
+        busi_pkg_version.busi_pkg_postfix,
+        busi_pkg_version.busi_pkg_version_remark,
+        busi_pkg_version.busi_pkg_status,
+        busi_pkg_version.busi_pkg_stage,
+        busi_pkg_version.busi_pkg_reference,
+        busi_pkg_version.upload_way,
+        busi_pkg_version.upload_name,
+        busi_pkg_version.path,
+        busi_pkg_version.host_conf_id,
+        busi_pkg_version.host_ip,
+        busi_pkg_version.port,
+        busi_pkg_version.user_name,
+        busi_pkg_version.passwd,
+        busi_pkg_version.creator AS version_creator,
+        busi_pkg_version.create_time AS version_create_time,
+        busi_pkg_version.update_time AS version_update_time
+        from
+        acp_busi_pkg_detail_info busi_pkg_detail_info
+        left join
+        acp_busi_pkg_version busi_pkg_version
+        ON
+        busi_pkg_detail_info.busi_pkg_id = busi_pkg_version.busi_pkg_id
+        where true
+        <if test="idList.size() != 0">
+            <if test="condition!= null and condition !=''">
+              and (
+                  busi_pkg_detail_info.busi_pkg_name_zh like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+              OR
+                busi_pkg_detail_info.busi_pkg_name_en  like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+              OR
+                busi_pkg_version.busi_pkg_version like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+              OR
+                busi_pkg_version.creator like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+                )
+            </if>
+            and busi_pkg_detail_info.busi_pkg_id in
+            <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="busiPkgVersion!=null and busiPkgVersion!=''">
+                and busi_pkg_version.busi_pkg_version like concat(concat('%',#{busiPkgVersion, jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="busiPkgStage!=null">
+                and busi_pkg_version.busi_pkg_stage = #{busiPkgStage, jdbcType=INTEGER}
+            </if>
+            <if test="busiPkgStatus!=null">
+                and busi_pkg_version.busi_pkg_status = #{busiPkgStatus, jdbcType=INTEGER}             </if>
+            <if test="creator!=null and creator!=''">
+                and busi_pkg_version.creator like concat(concat('%',#{creator, jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="busiPkgType!=null">
+                and busi_pkg_detail_info.busi_pkg_type = #{busiPkgType, jdbcType=INTEGER}
+            </if>
+        </if>
+        <if test="idList.size() == 0">
+            and busi_pkg_detail_info.busi_pkg_id = -100
+        </if>
+
+        order by
+        busi_pkg_detail_info.create_time desc,
+        busi_pkg_version.create_time desc
+    </select>
+
+    <!--分页获取业务包idList-->
+    <select id="findBusiPkgIdListByExample" resultMap="BaseResultMap" parameterType="com.cloud.paas.imageregistry.qo.BusiPkgExample">
+        select
+             busi_pkg_detail_info.busi_pkg_id as  busi_pkg_id
+        from
+            acp_busi_pkg_detail_info busi_pkg_detail_info
+        where true
+            <if test="condition!= null and condition !=''" >
+                and (busi_pkg_detail_info.busi_pkg_id in (
+                select
+                busi_pkg_detail_info1.busi_pkg_id as busi_pkg_id
+                from
+                acp_busi_pkg_detail_info busi_pkg_detail_info1
+                where
+                busi_pkg_detail_info1.busi_pkg_name_zh like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+                or
+                busi_pkg_detail_info1.busi_pkg_name_en like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+                )
+                or
+                busi_pkg_detail_info.busi_pkg_id in (
+                select
+                busi_pkg_version.busi_pkg_id
+                from
+                acp_busi_pkg_version busi_pkg_version
+                where
+                busi_pkg_version.busi_pkg_version like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+                OR
+                busi_pkg_version.creator like concat(concat('%',#{condition, jdbcType=VARCHAR}),'%')
+                )
+              )
+            </if>
+            <if test="busiPkgNameZh!=null and busiPkgNameZh!=''">
+               and busi_pkg_detail_info.busi_pkg_name_zh like concat(concat('%',#{busiPkgNameZh, jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="busiPkgNameEn!=null and busiPkgNameEn!=''">
+               and busi_pkg_detail_info.busi_pkg_name_en like concat(concat('%',#{busiPkgNameEn, jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="busiPkgType!=null">
+                and busi_pkg_detail_info.busi_pkg_type = #{busiPkgType, jdbcType=INTEGER}
+            </if>
+            <if test="(busiPkgVersion!=null and busiPkgVersion!='') or  (busiPkgStage!=null) or (busiPkgStatus!=null) or (creator!=null and creator!='') ">
+            and
+            busi_pkg_detail_info.busi_pkg_id in (
+                select busi_pkg_version.busi_pkg_id
+                from
+                     acp_busi_pkg_version busi_pkg_version
+                where TRUE
+                    <if test="busiPkgVersion!=null and busiPkgVersion!=''">
+                          and busi_pkg_version.busi_pkg_version like concat(concat('%',#{busiPkgVersion, jdbcType=VARCHAR}),'%')
+                    </if>
+                    <if test="busiPkgStage!=null">
+                          and busi_pkg_version.busi_pkg_stage = #{busiPkgStage, jdbcType=INTEGER}
+                    </if>
+                    <if test="busiPkgStatus!=null">
+                          and busi_pkg_version.busi_pkg_status = #{busiPkgStatus, jdbcType=INTEGER}
+                    </if>
+                    <if test="creator!=null and creator!=''">
+                          and busi_pkg_version.creator like concat(concat('%',#{creator, jdbcType=VARCHAR}),'%')
+                    </if>
+                  )
+            </if>
+            order by
+            busi_pkg_detail_info.create_time desc
+    </select>
+
+
+    <!--busiPKgId条件业务包详情查询-->
+    <select id="selectVersionVOList" parameterType="java.lang.Integer" resultMap="BusiPkgListVO">
+    select
+      busi_pkg_detail_info.busi_pkg_id,
+      busi_pkg_detail_info.busi_pkg_name_zh,
+      busi_pkg_detail_info.busi_pkg_name_en,
+      busi_pkg_detail_info.busi_pkg_type,
+      busi_pkg_detail_info.busi_pkg_remark,
+      busi_pkg_detail_info.busi_pkg_auth,
+      busi_pkg_detail_info.busi_pkg_size,
+      busi_pkg_detail_info.busi_pkg_img_path,
+      busi_pkg_detail_info.creator,
+      busi_pkg_detail_info.create_time,
+      busi_pkg_detail_info.update_time,
+      busi_pkg_detail_info.upload_way,
+      busi_pkg_detail_info.host_conf_id,
+      busi_pkg_detail_info.host_ip,
+      busi_pkg_detail_info.port,
+      busi_pkg_detail_info.user_name,
+      busi_pkg_detail_info.passwd,
+      busi_pkg_detail_info.remote_file,
+
+      busi_pkg_version.busi_pkg_version_id,
+      busi_pkg_version.busi_pkg_id,
+      busi_pkg_version.busi_pkg_version,
+      busi_pkg_version.busi_pkg_version_size,
+      busi_pkg_version.busi_pkg_postfix,
+      busi_pkg_version.busi_pkg_version_remark,
+      busi_pkg_version.busi_pkg_status,
+      busi_pkg_version.busi_pkg_stage,
+      busi_pkg_version.busi_pkg_reference,
+      busi_pkg_version.upload_way,
+      busi_pkg_version.upload_name,
+      busi_pkg_version.path,
+      busi_pkg_version.host_conf_id,
+      busi_pkg_version.host_ip,
+      busi_pkg_version.port,
+      busi_pkg_version.user_name,
+      busi_pkg_version.passwd,
+      busi_pkg_version.creator AS version_creator,
+      busi_pkg_version.create_time,
+      busi_pkg_version.update_time
+    from
+      acp_busi_pkg_detail_info busi_pkg_detail_info
+    left join
+      acp_busi_pkg_version busi_pkg_version
+    on busi_pkg_detail_info.busi_pkg_id = busi_pkg_version.busi_pkg_id
+    having
+       busi_pkg_detail_info.busi_pkg_id=#{busiPkgId,jdbcType=INTEGER};
+  </select>
+
+    <!--条件业务包详情查询-->
+    <select id="selectVersionVOListByExample" parameterType="com.cloud.paas.imageregistry.qo.BusiPkgExample"
+            resultMap="BusiPkgListVO">
+        select
+        busi_pkg_detail_info.busi_pkg_id,
+        busi_pkg_detail_info.busi_pkg_name_zh,
+        busi_pkg_detail_info.busi_pkg_name_en,
+        busi_pkg_detail_info.busi_pkg_type,
+        busi_pkg_detail_info.busi_pkg_remark,
+        busi_pkg_detail_info.busi_pkg_auth,
+        busi_pkg_detail_info.busi_pkg_size,
+        busi_pkg_detail_info.busi_pkg_img_path,
+        busi_pkg_detail_info.creator,
+        busi_pkg_detail_info.create_time,
+        busi_pkg_detail_info.update_time,
+        busi_pkg_detail_info.upload_way,
+        busi_pkg_detail_info.host_conf_id,
+        busi_pkg_detail_info.host_ip,
+        busi_pkg_detail_info.port,
+        busi_pkg_detail_info.user_name,
+        busi_pkg_detail_info.passwd,
+        busi_pkg_detail_info.remote_file,
+
+        busi_pkg_version.busi_pkg_version_id,
+        busi_pkg_version.busi_pkg_id,
+        busi_pkg_version.busi_pkg_version,
+        busi_pkg_version.busi_pkg_version_size,
+        busi_pkg_version.busi_pkg_postfix,
+        busi_pkg_version.busi_pkg_version_remark,
+        busi_pkg_version.busi_pkg_status,
+        busi_pkg_version.busi_pkg_stage,
+        busi_pkg_version.busi_pkg_reference,
+        busi_pkg_version.upload_way,
+        busi_pkg_version.upload_name,
+        busi_pkg_version.path,
+        busi_pkg_version.host_conf_id,
+        busi_pkg_version.host_ip,
+        busi_pkg_version.port,
+        busi_pkg_version.user_name,
+        busi_pkg_version.passwd,
+        busi_pkg_version.creator AS version_creator,
+        busi_pkg_version.create_time AS version_create_time,
+        busi_pkg_version.update_time AS version_update_time
+        from
+        acp_busi_pkg_detail_info busi_pkg_detail_info
+        left join
+        acp_busi_pkg_version busi_pkg_version
+        ON
+        busi_pkg_detail_info.busi_pkg_id = busi_pkg_version.busi_pkg_id
+        <where>
+        <if test="busiPkgNameZh!=null and busiPkgNameZh!=''">
+            and busi_pkg_detail_info.busi_pkg_name_zh like concat(concat('%',#{busiPkgNameZh, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="busiPkgNameEn!=null and busiPkgNameEn!=''">
+            and busi_pkg_detail_info.busi_pkg_name_en like concat(concat('%',#{busiPkgNameEn, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="busiPkgVersion!=null and busiPkgVersion!=''">
+            and busi_pkg_version.busi_pkg_version like concat(concat('%',#{busiPkgVersion, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="busiPkgStatus!=null">
+            and busi_pkg_version.busi_pkg_status = #{busiPkgStatus, jdbcType=INTEGER}
+        </if>
+        <if test="busiPkgStage!=null">
+            and busi_pkg_version.busi_pkg_stage = #{busiPkgStage, jdbcType=INTEGER}
+        </if>
+        <if test="creator!=null and creator!=''">
+            and busi_pkg_version.creator like concat(concat('%',#{creator, jdbcType=VARCHAR}),'%')
+        </if>
+        </where>
+        order by
+        busi_pkg_detail_info.create_time desc,
+        busi_pkg_version.create_time desc
+    </select>
+
+
+    <!--插入基本信息-->
+    <insert id="doInsertByBean" parameterType="com.cloud.paas.imageregistry.model.BusiPkgDetail">
+        <selectKey resultType="java.lang.Integer" keyProperty="busiPkgId" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into acp_busi_pkg_detail_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            busi_pkg_id,
+            <if test="busiPkgNameZh != null">
+                busi_pkg_name_zh,
+            </if>
+            <if test="busiPkgNameEn != null">
+                busi_pkg_name_en,
+            </if>
+            <if test="busiPkgType != null">
+                busi_pkg_type,
+            </if>
+            <if test="busiPkgRemark != null">
+                busi_pkg_remark,
+            </if>
+            <if test="busiPkgAuth != null">
+                busi_pkg_auth,
+            </if>
+            <if test="busiPkgSize != null">
+                busi_pkg_size,
+            </if>
+            <if test="busiPkgImgPath != null">
+                busi_pkg_img_path,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="uploadWay != null">
+                upload_way,
+            </if>
+            <if test="hostConfId != null">
+                host_conf_id,
+            </if>
+            <if test="hostIp != null">
+                host_ip,
+            </if>
+            <if test="port != null">
+                port,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="passwd != null">
+                passwd,
+            </if>
+            <if test="remoteFile != null">
+                remote_file,
+            </if>
+
+            create_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{busiPkgId,jdbcType=INTEGER},
+            <if test="busiPkgNameZh != null">
+                #{busiPkgNameZh,jdbcType=VARCHAR},
+            </if>
+            <if test="busiPkgNameEn != null">
+                #{busiPkgNameEn,jdbcType=VARCHAR},
+            </if>
+            <if test="busiPkgType != null">
+                #{busiPkgType,jdbcType=INTEGER},
+            </if>
+            <if test="busiPkgRemark != null">
+                #{busiPkgRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="busiPkgAuth != null">
+                #{busiPkgAuth,jdbcType=INTEGER},
+            </if>
+            <if test="busiPkgSize != null">
+                #{busiPkgSize,jdbcType=DECIMAL},
+            </if>
+            <if test="busiPkgImgPath != null">
+                #{busiPkgImgPath,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="uploadWay != null">
+                #{uploadWay,jdbcType=INTEGER},
+            </if>
+            <if test="hostConfId != null">
+                #{hostConfId,jdbcType=INTEGER},
+            </if>
+            <if test="hostIp != null">
+                #{hostIp,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null">
+                #{port,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passwd != null">
+                #{passwd,jdbcType=VARCHAR},
+            </if>
+            <if test="remoteFile != null">
+                #{remoteFile,jdbcType=VARCHAR},
+            </if>
+            now(3)
+
+
+        </trim>
+    </insert>
+
+    <!--id删除版本信息-->
+    <delete id="doDeleteById" parameterType="java.lang.Integer">
+    delete
+    from
+      acp_busi_pkg_detail_info
+    where
+      busi_pkg_id = #{busiPkgId,jdbcType=INTEGER}
+  </delete>
+
+    <!--更新版本信息的内容-->
+    <update id="doUpdateByBean" parameterType="com.cloud.paas.imageregistry.model.BusiPkgDetail">
+        update
+        acp_busi_pkg_detail_info
+        <set>
+            <if test="busiPkgRemark != null">
+                busi_pkg_remark = #{busiPkgRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="busiPkgAuth != null">
+                busi_pkg_auth = #{busiPkgAuth,jdbcType=INTEGER},
+            </if>
+            <if test="busiPkgSize !=null">
+                busi_pkg_size = #{busiPkgSize,jdbcType=DECIMAL},
+            </if>
+                update_time = now(3),
+        </set>
+        where busi_pkg_id = #{busiPkgId,jdbcType=INTEGER}
+    </update>
+
+    <!--查询业务包信息-->
+    <select id="doSearchList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_busi_pkg_detail_info
+    </select>
+
+    <!--id查询业务包信息-->
+    <select id="doFindById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        acp_busi_pkg_detail_info
+        where
+        busi_pkg_id = #{busiPkgId,jdbcType=INTEGER}
+    </select>
+
+    <!-- 根据业务包中文名查找业务包数量 -->
+    <select id="doFindByNameZh" resultType="int" >
+        SELECT COUNT(1) FROM acp_busi_pkg_detail_info
+        WHERE busi_pkg_name_zh = #{busiPkgNameZh,jdbcType=VARCHAR}
+    </select>
+    <!-- 根据业务包中文名查找业务包数量 -->
+    <select id="doFindByNameEn" resultType="int">
+        SELECT COUNT(1) FROM acp_busi_pkg_detail_info
+        WHERE busi_pkg_name_en = #{busiPkgNameEn,jdbcType=VARCHAR}
+    </select>
+
+
+
+</mapper>
